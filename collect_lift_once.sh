@@ -45,7 +45,7 @@ do
     (
         source ~/miniconda3/etc/profile.d/conda.sh
         conda activate act
-        python collect_arm_once.py --frame_rate 30 --task "lift_object"
+        python collect_arm_once.py --frame_rate 30 --task "play_games"
     )
     echo "-> 数据采集程序已结束。"
 
