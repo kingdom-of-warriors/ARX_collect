@@ -74,23 +74,17 @@ class ArmDataCollector(Node):
         self.config = config
         
         # 数据队列（最多存储2秒的数据）
-        max_queue_size = args.frame_rate * 2
-        
-        # 主手机械臂数据（用作动作）
+        max_queue_size = args.frame_rate * 2 
         self.master_left_deque = deque(maxlen=max_queue_size)
         self.master_right_deque = deque(maxlen=max_queue_size)
-        
-        # 相机数据（用作观测）
         self.img_head_deque = deque(maxlen=max_queue_size)
         self.img_left_deque = deque(maxlen=max_queue_size)
         self.img_right_deque = deque(maxlen=max_queue_size)
-        
-        # 时间戳记录
+                             
         self.last_update_time = self.get_clock().now()
         
         # 创建订阅者
         self._create_subscriptions()
-        
         self.get_logger().info("ArmDataCollector initialized")
     
     def _create_subscriptions(self):
@@ -132,8 +126,6 @@ class ArmDataCollector(Node):
         
         self.get_logger().info("All subscriptions created")
     
-    # ========== 回调函数 ==========
-    
     def master_left_callback(self, msg):
         """左主手回调"""
         self.master_left_deque.append(msg)
@@ -170,12 +162,9 @@ class ArmDataCollector(Node):
             self.get_logger().error(f"Failed to decompress image: {e}")
             return None
     
-    # ========== 数据提取方法 ==========
     
     def extract_arm_data(self, msg):
         """
-        从RobotStatus消息中提取数据
-        
         RobotStatus包含:
         - joint_pos[7]: 关节角度 (rad)
         - joint_vel[7]: 关节速度 (rad/s)
@@ -202,8 +191,6 @@ class ArmDataCollector(Node):
     
     def get_observation(self):
         """
-        获取当前观测
-        
         观测包括:
         - images: 三个相机的RGB图像
         - qpos: 双臂关节位置 [左臂7维 + 右臂7维]
@@ -282,29 +269,24 @@ def collect_information(args, collector, voice_engine):
     actions_eef = []
     count = 0
     rate = Rate(args.frame_rate)
-    
     gripper_idx = [6, 13]
     gripper_close_threshold = 3
-    
-    key_input = None
     
     print("\nStarting data collection...")
     print("  - Press 'e' to END this trajectory recording")
     
-    # 创建一个窗口用于显示所有内容
+    # 显示所有内容
     WINDOW_NAME = "Dual Arm Collection"
     cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
 
     while rclpy.ok():
         obs_dict = collector.get_observation()
-        
-        # 数据同步检查
         if obs_dict is None:
             print("Synchronization frame, waiting...", end='\r')
             rate.sleep()
             continue
         
-        # 处理动作数据
+        # 动作数据与位姿一致
         action = deepcopy(obs_dict['qpos'])
         action_eef = deepcopy(obs_dict['eef'])
 
@@ -315,29 +297,20 @@ def collect_information(args, collector, voice_engine):
         action_eef[6] = 0 if action_eef[6] < gripper_close_threshold else action_eef[6]
         action_eef[13] = 0 if action_eef[13] < gripper_close_threshold else action_eef[13]
         
-        # 收集数据
         timesteps.append(obs_dict)
         actions.append(action)
         actions_eef.append(action_eef)
 
-        # --- 图像拼接 ---
+        # 拼接三个图像
         head_img = obs_dict['images']['head']
         left_img = obs_dict['images']['left_wrist']
         right_img = obs_dict['images']['right_wrist']
-
-        # 确保所有图像高度一致以便水平拼接
         h, w, _ = head_img.shape
         left_img_resized = cv2.resize(left_img, (w, h))
         right_img_resized = cv2.resize(right_img, (w, h))
-        
-        # 水平拼接三个图像
         combined_img = np.hstack([left_img_resized, head_img, right_img_resized])
-        
-        # 在图像上添加状态文本
         text = f"Frames: {count} (Press 'e' to end)"
         cv2.putText(combined_img, text, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-
-        # 显示合并后的图像
         cv2.imshow(WINDOW_NAME, combined_img)
         
         # 检测按键
@@ -345,11 +318,8 @@ def collect_information(args, collector, voice_engine):
         if key == ord('e'):
             print(f"\n✓ Trajectory recording finished.")
             break
-        
         count += 1
-        
-        if not rclpy.ok():
-            exit(-1)
+        if not rclpy.ok(): exit(-1)
         
         rate.sleep()
     
@@ -501,7 +471,6 @@ def main(args):
         
         timesteps, actions, actions_eef = collect_information(args, collector, voice_engine)
         
-        # 如果没有采集到数据，直接开始下一次
         if not timesteps:
             print("\nNo data collected for this episode. Starting next one.")
             continue
@@ -522,11 +491,11 @@ def main(args):
                     current_episode += 1
                 except Exception as e:
                     print(f"\033[31m[ERROR] Failed to save episode: {e}\033[0m")
-                break # 继续下一次采集
+                break
             
             elif key == ord('d'):
                 print("\033[31m[INFO] Episode discarded. Not saved.\033[0m")
-                break # 继续下一次采集
+                break
 
             elif key == ord('n'):
                 print("Exiting data collection.")
@@ -545,7 +514,6 @@ def main(args):
 
 
 def parse_arguments():
-    """解析命令行参数"""
     parser = argparse.ArgumentParser(description='Collect demonstration data from dual-arm robot')
     
     parser.add_argument('--dataset_dir', type=str, default=str(Path(__file__).parent / 'datasets'), help='Dataset directory')
