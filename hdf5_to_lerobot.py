@@ -5,12 +5,12 @@ from pathlib import Path
 import json
 from tqdm import tqdm
 import argparse
+import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 
 def decompress_image(compressed_data):
-    """
-    解压缩图像数据
-    """
     try:
         img_array = np.frombuffer(compressed_data, dtype=np.uint8)
         img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
@@ -27,10 +27,7 @@ def convert_episode_to_lerobot(hdf5_path, output_dir, episode_idx, chunk_idx):
     """
     将单个HDF5 episode转换为LeRobot格式，并放入指定的chunk中。
     """
-    
     output_dir = Path(output_dir)
-    
-    # 根据chunk_idx动态生成目录
     chunk_name = f"chunk-{chunk_idx:03d}"
     data_dir = output_dir / "data" / chunk_name
     video_chunk_dir = output_dir / "videos" / chunk_name
@@ -52,8 +49,6 @@ def convert_episode_to_lerobot(hdf5_path, output_dir, episode_idx, chunk_idx):
         
         print(f"\n任务: {task_name}")
         print(f"总帧数: {total_frames}")
-        
-        # 提取视频
         print("\n[1/3] 提取视频...")
         cameras = list(f['observations/images'].keys())
         print(f"  发现相机: {cameras}")
@@ -62,45 +57,31 @@ def convert_episode_to_lerobot(hdf5_path, output_dir, episode_idx, chunk_idx):
         for camera in cameras:
             print(f"  处理 {camera} 相机...")
             
-            # 为每个相机创建单独的视频目录
             camera_video_dir_name = f"observation.image.{camera}"
             camera_video_dir = video_chunk_dir / camera_video_dir_name
             camera_video_dir.mkdir(parents=True, exist_ok=True)
-
             camera_data = f[f'observations/images/{camera}']
-            
-            # 解压第一帧获取尺寸
-            first_img = decompress_image(camera_data[0])
-            if first_img is None:
-                print(f"    ⚠ 无法读取 {camera} 的第一帧，跳过")
-                continue
-            
+        
+            first_img = decompress_image(camera_data[0])            
             height, width = first_img.shape[:2]
             camera_shapes[camera] = (height, width)
             
             # 创建视频文件，文件名直接是episode编号
             video_filename = f"{episode_idx:06d}.mp4"
             video_path = camera_video_dir / video_filename
-            
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             fps = 30
             out = cv2.VideoWriter(str(video_path), fourcc, fps, (width, height))
-            
-            if not out.isOpened():
-                print(f"    ✗ 无法创建视频: {video_path}")
-                continue
             
             # 写入所有帧
             failed_count = 0
             for i in range(total_frames):
                 img = decompress_image(camera_data[i])
                 if img is not None:
-                    # 转回BGR for VideoWriter
                     img_bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
                     out.write(img_bgr)
                 else:
                     failed_count += 1
-                    # 写入黑帧
                     black_frame = np.zeros((height, width, 3), dtype=np.uint8)
                     out.write(black_frame)
             
@@ -109,7 +90,6 @@ def convert_episode_to_lerobot(hdf5_path, output_dir, episode_idx, chunk_idx):
             file_size_mb = video_path.stat().st_size / (1024 * 1024)
             print(f"    ✓ {camera}: {file_size_mb:.2f} MB (失败帧: {failed_count}) -> {video_path.relative_to(output_dir)}")
         
-        # 提取数据
         print("\n[2/3] 提取数据...")
         
         # 读取所有数据
@@ -160,22 +140,13 @@ def convert_episode_to_lerobot(hdf5_path, output_dir, episode_idx, chunk_idx):
         # 保存为Parquet格式
         print("\n[3/3] 保存数据...")
         
-        try:
-            import pandas as pd
-            import pyarrow as pa
-            import pyarrow.parquet as pq
-            
-            df = pd.DataFrame(episode_data)
-            parquet_filename = f"episode_{episode_idx:06d}.parquet"
-            parquet_path = data_dir / parquet_filename
-            table = pa.Table.from_pandas(df)
-            pq.write_table(table, parquet_path, compression='snappy')
-            
-            file_size_mb = parquet_path.stat().st_size / (1024 * 1024)
-            print(f"  ✓ 数据已保存: {file_size_mb:.2f} MB")
-            
-        except ImportError:
-            print("  ⚠ 缺少 pandas/pyarrow 库，无法保存为Parquet。")
+        df = pd.DataFrame(episode_data)
+        parquet_filename = f"episode_{episode_idx:06d}.parquet"
+        parquet_path = data_dir / parquet_filename
+        table = pa.Table.from_pandas(df)
+        pq.write_table(table, parquet_path, compression='snappy')
+        file_size_mb = parquet_path.stat().st_size / (1024 * 1024)
+        print(f"  ✓ 数据已保存: {file_size_mb:.2f} MB")
         
         # 创建元数据
         meta_info = {
@@ -202,7 +173,6 @@ def convert_dataset_to_lerobot(input_dir, output_dir, chunk_size):
     """
     input_dir = Path(input_dir)
     output_dir = Path(output_dir)
-    
     episode_files = sorted(input_dir.glob("episode_*.hdf5"))
     
     print(f"\n{'='*80}")
@@ -215,16 +185,10 @@ def convert_dataset_to_lerobot(input_dir, output_dir, chunk_size):
     
     success_count = 0
     for i, hdf5_file in tqdm(enumerate(episode_files)):
-        try:
-            chunk_idx = i // chunk_size
-            success = convert_episode_to_lerobot(hdf5_file, output_dir, i, chunk_idx)
-            if success:
-                success_count += 1
-        except Exception as e:
-            print(f"✗ 转换失败 {hdf5_file.name}: {e}")
-            import traceback
-            traceback.print_exc()
-            continue
+        chunk_idx = i // chunk_size
+        success = convert_episode_to_lerobot(hdf5_file, output_dir, i, chunk_idx)
+        if success:
+            success_count += 1
     
     # 创建最终的数据集级别元数据
     print(f"\n{'='*80}")
@@ -236,12 +200,8 @@ def convert_dataset_to_lerobot(input_dir, output_dir, chunk_size):
         for chunk_dir in data_root.iterdir():
             if chunk_dir.is_dir() and chunk_dir.name.startswith('chunk-'):
                 for episode_file in chunk_dir.glob("episode_*.parquet"):
-                    try:
-                        import pyarrow.parquet as pq
-                        table = pq.read_table(episode_file)
-                        total_frames += len(table)
-                    except Exception:
-                        pass
+                    table = pq.read_table(episode_file)
+                    total_frames += len(table)
 
     dataset_meta = {
         'name': input_dir.name,
@@ -272,13 +232,13 @@ def main():
     parser.add_argument(
         '--input',
         type=str,
-        default='/home/arx/ROS2_LIFT_Play/act/datasets',
+        default='./datasets',
         help='输入HDF5数据集目录 (包含 episode_*.hdf5 文件)'
     )
     parser.add_argument(
         '--output',
         type=str,
-        default='/home/arx/ROS2_LIFT_Play/act/datasets_lerobot',
+        default='./datasets_lerobot',
         help='输出LeRobot格式目录'
     )
     parser.add_argument(
