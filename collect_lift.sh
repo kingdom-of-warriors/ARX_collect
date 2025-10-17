@@ -18,7 +18,7 @@ LIFT_PID=$!
 sleep 5
 gnome-terminal -t "head_pose" -x  bash -c "cd /home/arx/LIFT/body/ROS2; \
 source install/setup.bash && \
-ros2 topic pub -l /lift_height_cmd arm_control/msg/PosCmd '{height: 10.0}' ; \
+ros2 topic pub -1 /lift_height_cmd arm_control/msg/PosCmd '{height: 10.0}' ; \
 exec bash;"
 
 # 杀死 lift 进程，来解锁机械臂关节
@@ -36,6 +36,6 @@ gnome-terminal --title="realsense" -x bash -c "cd /home/arx/ROS2_LIFT_Play/reals
 sleep 3
 
 # 启动数据采集代码
-gnome-terminal -t "collect_arx" -x  bash -c "cd /home/arx/collect; \
+gnome-terminal -t "collect_arx" -x  bash -c "cd /home/arx/ARX_collect; \
 source ~/miniconda3/etc/profile.d/conda.sh; conda activate act; \
 python collect_arm.py --frame_rate 30 --task "lift_object"; exec bash;"

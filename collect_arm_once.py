@@ -1,9 +1,4 @@
 # -- coding: UTF-8
-"""
-双臂机器人数据采集脚本
-采集主手机械臂状态作为动作，相机图像和机械臂状态作为观测
-"""
-
 import os
 import sys
 
@@ -37,7 +32,6 @@ from arx5_arm_msg.msg import RobotStatus
 
 np.set_printoptions(linewidth=200)
 
-# 语音引擎
 voice_engine = pyttsx3.init()
 voice_engine.setProperty('voice', 'en')
 voice_engine.setProperty('rate', 120)
@@ -45,7 +39,6 @@ voice_lock = threading.Lock()
 
 
 def voice_process(voice_engine, line):
-    """语音提示"""
     with voice_lock:
         voice_engine.say(line)
         voice_engine.runAndWait()
@@ -53,7 +46,6 @@ def voice_process(voice_engine, line):
 
 
 def load_yaml(yaml_file):
-    """加载配置文件"""
     try:
         with open(yaml_file, 'r', encoding='utf-8') as file:
             return yaml.safe_load(file)
@@ -66,14 +58,11 @@ def load_yaml(yaml_file):
 
 
 class ArmDataCollector(Node):
-    """双臂机器人数据采集器"""
-    
     def __init__(self, args, config):
         super().__init__('arm_data_collector')
         self.args = args
         self.config = config
         
-        # 数据队列（最多存储2秒的数据）
         max_queue_size = args.frame_rate * 2 
         self.master_left_deque = deque(maxlen=max_queue_size)
         self.master_right_deque = deque(maxlen=max_queue_size)
@@ -83,135 +72,60 @@ class ArmDataCollector(Node):
                              
         self.last_update_time = self.get_clock().now()
         
-        # 创建订阅者
         self._create_subscriptions()
         self.get_logger().info("ArmDataCollector initialized")
     
     def _create_subscriptions(self):
-        """创建所有订阅者"""
-        
-        # 订阅主手机械臂状态
-        self.create_subscription(
-            RobotStatus,
-            '/arm_master_l_status',
-            self.master_left_callback,
-            10
-        )
-        self.create_subscription(
-            RobotStatus,
-            '/arm_master_r_status',
-            self.master_right_callback,
-            10
-        )
-        
-        # 订阅相机图像
-        self.create_subscription(
-            CompressedImage,
-            '/camera/camera_h/color/image_rect_raw/compressed',
-            self.img_head_callback,
-            10
-        )
-        self.create_subscription(
-            CompressedImage,
-            '/camera/camera_l/color/image_rect_raw/compressed',
-            self.img_left_callback,
-            10
-        )
-        self.create_subscription(
-            CompressedImage,
-            '/camera/camera_r/color/image_rect_raw/compressed',
-            self.img_right_callback,
-            10
-        )
-        
+        self.create_subscription(RobotStatus, '/arm_master_l_status', self.master_left_callback, 10)
+        self.create_subscription(RobotStatus, '/arm_master_r_status', self.master_right_callback, 10)
+        self.create_subscription(CompressedImage, '/camera/camera_h/color/image_rect_raw/compressed', self.img_head_callback, 10)
+        self.create_subscription(CompressedImage, '/camera/camera_l/color/image_rect_raw/compressed', self.img_left_callback, 10)
+        self.create_subscription(CompressedImage, '/camera/camera_r/color/image_rect_raw/compressed', self.img_right_callback, 10)
         self.get_logger().info("All subscriptions created")
     
     def master_left_callback(self, msg):
-        """左主手回调"""
         self.master_left_deque.append(msg)
     
     def master_right_callback(self, msg):
-        """右主手回调"""
         self.master_right_deque.append(msg)
     
     def img_head_callback(self, msg):
-        """头部相机回调"""
         img = self._decompress_image(msg)
-        if img is not None:
-            self.img_head_deque.append(img)
+        if img is not None: self.img_head_deque.append(img)
     
     def img_left_callback(self, msg):
-        """左腕相机回调"""
         img = self._decompress_image(msg)
-        if img is not None:
-            self.img_left_deque.append(img)
+        if img is not None: self.img_left_deque.append(img)
     
     def img_right_callback(self, msg):
-        """右腕相机回调"""
         img = self._decompress_image(msg)
-        if img is not None:
-            self.img_right_deque.append(img)
+        if img is not None: self.img_right_deque.append(img)
     
     def _decompress_image(self, msg):
-        """解压缩图像"""
         try:
             np_arr = np.frombuffer(msg.data, np.uint8)
-            img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-            return img
+            return cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
         except Exception as e:
             self.get_logger().error(f"Failed to decompress image: {e}")
             return None
     
-    
     def extract_arm_data(self, msg):
-        """
-        RobotStatus包含:
-        - joint_pos[7]: 关节角度 (rad)
-        - joint_vel[7]: 关节速度 (rad/s)
-        - joint_cur[7]: 关节电流 (A)
-        - end_pos[6]: 末端位姿 (x,y,z,roll,pitch,yaw)
-        
-        返回:
-        - qpos[7]: 关节位置
-        - qvel[7]: 关节速度
-        - effort[7]: 关节力矩/电流
-        - eef[7]: 末端位姿 + 夹爪状态
-        """
         qpos = np.array(msg.joint_pos[:7])
         qvel = np.array(msg.joint_vel[:7])
         effort = np.array(msg.joint_cur[:7])
-        
-        # 末端位姿 (x,y,z,roll,pitch,yaw) + 夹爪
-        eef = np.concatenate([
-            np.array(msg.end_pos[:6]),
-            [msg.joint_pos[6]]
-        ])
-        
+        eef = np.concatenate([np.array(msg.end_pos[:6]), [msg.joint_pos[6]]])
         return qpos, qvel, effort, eef
     
     def get_observation(self):
-        """
-        观测包括:
-        - images: 三个相机的RGB图像
-        - qpos: 双臂关节位置 [左臂7维 + 右臂7维]
-        - qvel: 双臂关节速度
-        - effort: 双臂关节力矩
-        - eef: 双臂末端位姿
-        """
-        if (len(self.master_left_deque) == 0 or
-            len(self.master_right_deque) == 0 or
-            len(self.img_head_deque) == 0 or
-            len(self.img_left_deque) == 0 or
-            len(self.img_right_deque) == 0):
+        if not all([self.master_left_deque, self.master_right_deque, self.img_head_deque, self.img_left_deque, self.img_right_deque]):
             return None
         
-        # 获取最新数据
         left_msg = self.master_left_deque[-1]
         right_msg = self.master_right_deque[-1]
         left_qpos, left_qvel, left_effort, left_eef = self.extract_arm_data(left_msg)
         right_qpos, right_qvel, right_effort, right_eef = self.extract_arm_data(right_msg)
         
-        obs_dict = {
+        return {
             'qpos': np.concatenate([left_qpos, right_qpos]),
             'qvel': np.concatenate([left_qvel, right_qvel]),
             'effort': np.concatenate([left_effort, right_effort]),
@@ -222,18 +136,14 @@ class ArmDataCollector(Node):
                 'right_wrist': self.img_right_deque[-1].copy(),
             }
         }
-        return obs_dict
 
 
 class Rate:
-    """ROS2频率控制器"""
-    
     def __init__(self, hz):
         self.period = 1.0 / hz
         self.last_time = time.time()
     
     def sleep(self):
-        """休眠以保持指定频率"""
         elapsed = time.time() - self.last_time
         sleep_time = self.period - elapsed
         if sleep_time > 0:
@@ -241,41 +151,26 @@ class Rate:
         self.last_time = time.time()
 
 
-# 数据采集流程
-
-def collect_detect(args, start_episode, voice_engine, collector):
-    """
-    采集前检测：倒计时并开始
-    """
+def collect_detect(start_episode, voice_engine):
     print(f"\nPreparing to record episode {start_episode}")
     input("Press Enter to start recording...")
     
-    # 倒计时
     for i in range(3, 0, -1):
         voice_process(voice_engine, str(i))
         time.sleep(1)
     
     voice_process(voice_engine, "Go!")
-    
-    return True
 
 
-def collect_information(args, collector, voice_engine):
-    """
-    采集轨迹数据，通过按键控制结束
-    """
-    timesteps = []
-    actions = []
-    actions_eef = []
+def collect_information(args, collector):
+    timesteps, actions, actions_eef = [], [], []
     count = 0
     rate = Rate(args.frame_rate)
     gripper_idx = [6, 13]
     gripper_close_threshold = 3
     
-    print("\nStarting data collection...")
-    print("  - Press 'e' to END this trajectory recording")
+    print("\nStarting data collection... Press 'e' to END this trajectory recording")
     
-    # 显示所有内容
     WINDOW_NAME = "Dual Arm Collection"
     cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
 
@@ -286,11 +181,9 @@ def collect_information(args, collector, voice_engine):
             rate.sleep()
             continue
         
-        # 动作数据与位姿一致
         action = deepcopy(obs_dict['qpos'])
         action_eef = deepcopy(obs_dict['eef'])
 
-        # 夹爪二值化处理
         for idx in gripper_idx:
             action[idx] = 0 if action[idx] < gripper_close_threshold else action[idx]
         
@@ -301,7 +194,6 @@ def collect_information(args, collector, voice_engine):
         actions.append(action)
         actions_eef.append(action_eef)
 
-        # 拼接三个图像
         head_img = obs_dict['images']['head']
         left_img = obs_dict['images']['left_wrist']
         right_img = obs_dict['images']['right_wrist']
@@ -313,7 +205,6 @@ def collect_information(args, collector, voice_engine):
         cv2.putText(combined_img, text, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         cv2.imshow(WINDOW_NAME, combined_img)
         
-        # 检测按键
         key = cv2.waitKey(1) & 0xFF
         if key == ord('e'):
             print(f"\n✓ Trajectory recording finished.")
@@ -328,25 +219,22 @@ def collect_information(args, collector, voice_engine):
 
 
 def compress_and_pad_images(data_dict, camera_names, quality=50):
-    """压缩并填充图像数据"""
     encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
-    all_encoded = []
+    all_encoded_lengths = []
     
     for cam in camera_names:
         key = f'/observations/images/{cam}'
         encoded_list = []
         for img in data_dict[key]:
             success, enc = cv2.imencode('.jpg', img, encode_param)
-            if not success:
-                raise ValueError(f"Failed to encode image for camera {cam}")
+            if not success: raise ValueError(f"Failed to encode image for camera {cam}")
             encoded_list.append(enc)
-            all_encoded.append(len(enc))
+            all_encoded_lengths.append(len(enc))
         data_dict[key] = encoded_list
     
-    if not all_encoded:
-        return 0
+    if not all_encoded_lengths: return 0
         
-    padded_size = max(all_encoded)
+    padded_size = max(all_encoded_lengths)
     
     for cam in camera_names:
         key = f'/observations/images/{cam}'
@@ -357,7 +245,6 @@ def compress_and_pad_images(data_dict, camera_names, quality=50):
 
 
 def create_and_write_hdf5(args, data_dict, dataset_path, data_size, padded_size):
-    """创建并写入HDF5文件"""
     with h5py.File(dataset_path + '.hdf5', 'w', rdcc_nbytes=1024 ** 2 * 2) as root:
         root.attrs['sim'] = False
         root.attrs['task'] = str(args.task)
@@ -368,22 +255,17 @@ def create_and_write_hdf5(args, data_dict, dataset_path, data_size, padded_size)
         images = obs.create_group('images')
         
         for cam_name in args.camera_names:
-            img_shape = (data_size, padded_size)
-            img_chunk = (1, padded_size)
-            images.create_dataset(cam_name, img_shape, dtype='uint8', chunks=img_chunk, compression='gzip', compression_opts=4)
+            images.create_dataset(cam_name, (data_size, padded_size), dtype='uint8', chunks=(1, padded_size), compression='gzip', compression_opts=4)
         
-        state_dim = 14
-        eef_dim = 14
-        obs_specs = {'qpos': state_dim, 'qvel': state_dim, 'effort': state_dim, 'eef': eef_dim}
-        
+        obs_specs = {'qpos': 14, 'qvel': 14, 'effort': 14, 'eef': 14}
         for name, dim in obs_specs.items():
             obs.create_dataset(name, (data_size, dim), dtype='float64')
 
         obs.create_dataset('robot_base', (data_size, 6), dtype='float32')
         obs.create_dataset('base_velocity', (data_size, 4), dtype='float32')
         
-        root.create_dataset('action', (data_size, state_dim), dtype='float64')
-        root.create_dataset('action_eef', (data_size, eef_dim), dtype='float64')
+        root.create_dataset('action', (data_size, 14), dtype='float64')
+        root.create_dataset('action_eef', (data_size, 14), dtype='float64')
         root.create_dataset('action_base', (data_size, 6), dtype='float32')
         root.create_dataset('action_velocity', (data_size, 4), dtype='float32')
 
@@ -391,8 +273,7 @@ def create_and_write_hdf5(args, data_dict, dataset_path, data_size, padded_size)
             root[name][...] = arr
 
 
-def save_data(args, timesteps, actions, actions_eef, collector, dataset_path):
-    """数据处理与保存"""
+def save_data(args, timesteps, actions, actions_eef, dataset_path):
     data_size = len(actions)
     if data_size == 0:
         print("\nNo data to save.")
@@ -435,8 +316,7 @@ def save_data(args, timesteps, actions, actions_eef, collector, dataset_path):
 
 
 def main(args):
-    """主函数"""
-    print(f"\n{'='*60}\nARM DATA COLLECTOR - Multi-Trajectory Mode\n{'='*60}")
+    print(f"\n{'='*60}\nARM DATA COLLECTOR - Single Trajectory Mode\n{'='*60}")
     rclpy.init()
     config = load_yaml(args.config) if args.config else {}
     
@@ -462,22 +342,16 @@ def main(args):
                     continue
     
     current_episode = max_episode + 1
-    print(f"Starting from episode {current_episode}\n")
+    print(f"Starting episode {current_episode}\n")
     
-    while rclpy.ok():
-        if not collect_detect(args, current_episode, voice_engine, collector):
-            break
-        
-        timesteps, actions, actions_eef = collect_information(args, collector, voice_engine)
-        
-        if not timesteps:
-            print("\nNo data collected for this episode. Starting next one.")
-            continue
-
+    collect_detect(current_episode, voice_engine)
+    
+    timesteps, actions, actions_eef = collect_information(args, collector)
+    
+    if timesteps:
         print("\n--- Action Required ---")
         print("  [s] Save trajectory")
-        print("  [d] Discard trajectory")
-        print("  [n] Exit program")
+        print("  [d] Discard trajectory and exit")
         print(">>> Click the image window and press a key <<<")
         while True:
             key = cv2.waitKey(0) & 0xFF
@@ -485,9 +359,8 @@ def main(args):
                 print(f"\033[33m[INFO] Saving episode {current_episode}...\033[0m")
                 dataset_path = dataset_dir / f"episode_{current_episode}"
                 try:
-                    save_data(args, timesteps, actions, actions_eef, collector, str(dataset_path))
+                    save_data(args, timesteps, actions, actions_eef, str(dataset_path))
                     print(f"\033[32m[INFO] Episode {current_episode} saved successfully.\033[0m")
-                    current_episode += 1
                 except Exception as e:
                     print(f"\033[31m[ERROR] Failed to save episode: {e}\033[0m")
                 break
@@ -495,20 +368,15 @@ def main(args):
             elif key == ord('d'):
                 print("\033[31m[INFO] Episode discarded. Not saved.\033[0m")
                 break
-
-            elif key == ord('n'):
-                print("Exiting data collection.")
-                cv2.destroyAllWindows()
-                collector.destroy_node()
-                rclpy.shutdown()
-                spin_thread.join()
-                return
+    else:
+        print("\nNo data collected for this episode.")
     
     print("\nShutting down...")
     cv2.destroyAllWindows()
     collector.destroy_node()
     rclpy.shutdown()
-    spin_thread.join()
+    if spin_thread.is_alive():
+        spin_thread.join()
     print("✓ Shutdown complete")
 
 
