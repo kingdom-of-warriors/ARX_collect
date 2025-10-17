@@ -38,7 +38,7 @@ do
     # 启动重力补偿机械臂节点
     echo "-> 正在启动重力补偿节点 (L)..."
     gnome-terminal -t "L" -x bash -c "cd /home/arx/LIFT/ARX_X5/ROS2/X5_ws; source install/setup.bash && ros2 launch arx_x5_controller v2_collect.launch.py; exec bash;"
-    sleep 5 # 等待机械臂启动完成
+    sleep 5
 
     # 启动一条数据采集代码 (在当前终端运行，以阻塞脚本)
     echo "-> 启动数据采集程序，请根据提示操作..."

@@ -120,7 +120,7 @@ def process_all_episodes(all_hdf5_files, output_dir, chunk_size):
     meta_dir = output_dir / "meta"
     meta_dir.mkdir(parents=True, exist_ok=True)
 
-    # 在批量转换开始前，清空旧的元数据文件
+    # 清空旧的元数据文件
     for meta_file in ["episodes.jsonl", "tasks.jsonl", "info.json", "dataset.json"]:
         if (meta_dir / meta_file).exists():
             (meta_dir / meta_file).unlink()
@@ -190,7 +190,7 @@ def process_all_episodes(all_hdf5_files, output_dir, chunk_size):
         json.dump(dataset_meta, f, indent=2)
     print(f"✓ dataset.json 已保存")
     
-    # 写入 info.json (使用第一个任务的信息作为代表)
+    # 写入 info.json
     if sorted_tasks:
         info_meta = {'task': sorted_tasks[0], 'fps': 30}
         with open(meta_dir / "info.json", 'w') as f:
@@ -210,10 +210,9 @@ def main():
     
     parser.add_argument('--input', type=str, default='./datasets', help='包含多个数据集子目录的根目录')
     parser.add_argument('--output', type=str, default='./datasets_lerobot', help='统一的LeRobot格式输出目录')
-    parser.add_argument('--chunk-size', type=int, default=100, help='每个chunk包含的episode数量')
+    parser.add_argument('--chunk-size', type=int, default=1000, help='每个chunk包含的episode数量')
     
     args = parser.parse_args()
-    
     input_dir = Path(args.input)
     output_dir = Path(args.output)
     
@@ -221,9 +220,7 @@ def main():
         print(f"错误: 输入目录不存在: {input_dir}")
         return
     
-    # 递归查找所有子目录中的 episode_*.hdf5 文件
     all_hdf5_files = sorted(list(input_dir.glob("**/episode_*.hdf5")))
-    
     if not all_hdf5_files:
         print(f"错误: 在 {input_dir} 中没有找到任何 episode_*.hdf5 文件。")
         return
