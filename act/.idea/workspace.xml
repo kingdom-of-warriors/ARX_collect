@@ -1,0 +1,1064 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1262222d-3002-4f66-ac4d-6cfdeb1a75a8" name="更改" comment="更新代码">
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arm_control/arm_control_s__rosidl_typesupport_c.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/arm_control/arm_control_s__rosidl_typesupport_fastrtps_c.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/arm_control/arm_control_s__rosidl_typesupport_introspection_c.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/arm_control/msg/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_control/msg/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arm_control/msg/_arx_imu.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/arm_control/msg/_joint_control.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_control/msg/_joint_control.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arm_control/msg/_pos_cmd.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_control/msg/_pos_cmd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arx5_arm_msg/arx5_arm_msg_s__rosidl_typesupport_c.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/arx5_arm_msg/arx5_arm_msg_s__rosidl_typesupport_fastrtps_c.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/arx5_arm_msg/arx5_arm_msg_s__rosidl_typesupport_introspection_c.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/arx5_arm_msg/msg/_robot_cmd.py" beforeDir="false" afterPath="$PROJECT_DIR$/arx5_arm_msg/msg/_robot_cmd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arx5_arm_msg/msg/_robot_status.py" beforeDir="false" afterPath="$PROJECT_DIR$/arx5_arm_msg/msg/_robot_status.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/collect.py" beforeDir="false" afterPath="$PROJECT_DIR$/collect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/data/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/detr/models/detr_vae.py" beforeDir="false" afterPath="$PROJECT_DIR$/detr/models/detr_vae.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inference.py" beforeDir="false" afterPath="$PROJECT_DIR$/inference.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarm_control__rosidl_generator_c.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarm_control__rosidl_generator_c.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarm_control__rosidl_generator_py.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarm_control__rosidl_generator_py.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_c.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_c.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_cpp.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_cpp.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_fastrtps_c.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_fastrtps_c.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_fastrtps_cpp.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_fastrtps_cpp.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_introspection_c.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_introspection_c.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_introspection_cpp.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarm_control__rosidl_typesupport_introspection_cpp.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_generator_c.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_generator_c.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_generator_py.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_generator_py.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_c.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_c.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_cpp.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_cpp.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_fastrtps_c.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_fastrtps_c.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_fastrtps_cpp.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_fastrtps_cpp.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_introspection_c.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_introspection_c.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_introspection_cpp.so" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libarx5_arm_msg__rosidl_typesupport_introspection_cpp.so" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/ros_operator.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/ros_operator.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$/.." source="velocity_test" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;du-xinyi&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/facebookresearch/SLIP.git&quot;,
+    &quot;accountId&quot;: &quot;f8a8bddf-0c6a-471f-b11b-d2be9ee71556&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2njpCsAKC5eESui2FuE9BJ6kEQE" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.automatic.executor&quot;: &quot;Run&quot;,
+    &quot;Python.collect.executor&quot;: &quot;Run&quot;,
+    &quot;Python.export.executor&quot;: &quot;Run&quot;,
+    &quot;Python.inference.executor&quot;: &quot;Run&quot;,
+    &quot;Python.noise.executor&quot;: &quot;Run&quot;,
+    &quot;Python.record.executor&quot;: &quot;Run&quot;,
+    &quot;Python.rename.executor&quot;: &quot;Run&quot;,
+    &quot;Python.rename_datasets.executor&quot;: &quot;Run&quot;,
+    &quot;Python.rename_group.executor&quot;: &quot;Run&quot;,
+    &quot;Python.replay.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.train.executor&quot;: &quot;Run&quot;,
+    &quot;Python.train1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.utils.executor&quot;: &quot;Run&quot;,
+    &quot;Python.visualize.executor&quot;: &quot;Run&quot;,
+    &quot;Python.watch.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;/home/duxinyi/.local/share/JetBrains/PyCharm2024.3/Shell Script/shellcheck&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/duxinyi/Work/ARX_Model_V2.1/act/rename_group.py&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="Python.train">
+    <configuration name="collect" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="act" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="act" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/collect.py" />
+      <option name="PARAMETERS" value="--datasets datasets --episode_idx -1 --max_timesteps 800 --camera_names left_wrist --is_compress --robot Single  --key_collect" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="inference" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="act" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="LD_LIBRARY_PATH" value="$LD_LIBRARY_PATH:/opt/ros/noetic/lib" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="act" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/inference.py" />
+      <option name="PARAMETERS" value="--camera_names left_wrist --robot Single --backbone resnet34  --use_Z_encoder --spilt_states --mean_std_all --seed 42 --skip_mode 0" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rename_datasets" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="act" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="act" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/rename_datasets.py" />
+      <option name="PARAMETERS" value="--datasets datasets" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rename_group" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="act" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="act" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/rename_group.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="replay" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="act" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="act" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/replay.py" />
+      <option name="PARAMETERS" value="--episode_path episode_6.hdf5 --robot Lift --use_base --record Speed" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="train" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="act" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="http_proxy" value="http://127.0.0.1:7897" />
+        <env name="https_proxy" value="http://127.0.0.1:7897" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="act" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/train.py" />
+      <option name="PARAMETERS" value="--num_episodes 2 --batch_size 8 --epochs 10 --backbone resnet34" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="visualize" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="act" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="act" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/visualize.py" />
+      <option name="PARAMETERS" value="--datasets &quot;test&quot; --episode_idx -1 --robot Lift --individual_views" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.collect" />
+      <item itemvalue="Python.inference" />
+      <item itemvalue="Python.rename_datasets" />
+      <item itemvalue="Python.rename_group" />
+      <item itemvalue="Python.replay" />
+      <item itemvalue="Python.train" />
+      <item itemvalue="Python.visualize" />
+    </list>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-PY-252.23892.515" />
+        <option value="bundled-python-sdk-7e47963ff851-f0eec537fc84-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.23892.515" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="1262222d-3002-4f66-ac4d-6cfdeb1a75a8" name="更改" comment="" />
+      <created>1729496215452</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1729496215452</updated>
+      <workItem from="1729496216836" duration="21177000" />
+      <workItem from="1729531509416" duration="612000" />
+      <workItem from="1729587164976" duration="5762000" />
+      <workItem from="1729673219999" duration="11456000" />
+      <workItem from="1729754954090" duration="17853000" />
+      <workItem from="1729781727272" duration="556000" />
+      <workItem from="1729782779563" duration="7024000" />
+      <workItem from="1729843735985" duration="6764000" />
+      <workItem from="1729851221479" duration="221000" />
+      <workItem from="1729851531266" duration="12289000" />
+      <workItem from="1729878667923" duration="583000" />
+      <workItem from="1729927776237" duration="1032000" />
+      <workItem from="1729961388104" duration="120000" />
+      <workItem from="1729963045468" duration="968000" />
+      <workItem from="1729967215113" duration="34000" />
+      <workItem from="1730012852331" duration="6990000" />
+      <workItem from="1730045723831" duration="925000" />
+      <workItem from="1730100185423" duration="12932000" />
+      <workItem from="1730131731571" duration="672000" />
+      <workItem from="1730182805340" duration="5798000" />
+      <workItem from="1730361602043" duration="13164000" />
+      <workItem from="1730451262380" duration="6832000" />
+      <workItem from="1730472393515" duration="950000" />
+      <workItem from="1730623273424" duration="5618000" />
+      <workItem from="1730653504224" duration="66000" />
+      <workItem from="1730735537429" duration="17000" />
+      <workItem from="1730739586211" duration="720000" />
+      <workItem from="1730792136321" duration="565000" />
+      <workItem from="1730792944642" duration="2244000" />
+      <workItem from="1730800940116" duration="1953000" />
+      <workItem from="1730818784647" duration="2594000" />
+      <workItem from="1730878125034" duration="12087000" />
+      <workItem from="1731137194406" duration="5195000" />
+      <workItem from="1731144155383" duration="6050000" />
+      <workItem from="1731229267963" duration="7430000" />
+      <workItem from="1731315684494" duration="5513000" />
+      <workItem from="1732204446940" duration="1239000" />
+      <workItem from="1732262510139" duration="673000" />
+      <workItem from="1732263693398" duration="4954000" />
+      <workItem from="1732282883009" duration="5749000" />
+      <workItem from="1732342508528" duration="723000" />
+      <workItem from="1732374866688" duration="2101000" />
+      <workItem from="1732549429061" duration="203000" />
+      <workItem from="1733837834989" duration="1542000" />
+      <workItem from="1733920500523" duration="562000" />
+      <workItem from="1733921452517" duration="1601000" />
+      <workItem from="1733997178023" duration="19764000" />
+      <workItem from="1734075133820" duration="10029000" />
+      <workItem from="1734425671036" duration="3341000" />
+      <workItem from="1734445509522" duration="1681000" />
+      <workItem from="1734450600608" duration="458000" />
+      <workItem from="1734615893964" duration="3071000" />
+      <workItem from="1734619302726" duration="8144000" />
+      <workItem from="1734695944808" duration="4543000" />
+      <workItem from="1734713969938" duration="406000" />
+      <workItem from="1734766842077" duration="598000" />
+      <workItem from="1734798320458" duration="378000" />
+      <workItem from="1734856142934" duration="3609000" />
+      <workItem from="1734876691802" duration="9062000" />
+      <workItem from="1734943365039" duration="924000" />
+      <workItem from="1734948707233" duration="230000" />
+      <workItem from="1734957648710" duration="6873000" />
+      <workItem from="1735025360351" duration="5000" />
+      <workItem from="1735283525813" duration="1948000" />
+      <workItem from="1735294210193" duration="90000" />
+      <workItem from="1735309127748" duration="1209000" />
+      <workItem from="1735370080367" duration="1436000" />
+      <workItem from="1735372516879" duration="4859000" />
+      <workItem from="1735377473391" duration="604000" />
+      <workItem from="1735398978327" duration="2965000" />
+      <workItem from="1735458067043" duration="15771000" />
+      <workItem from="1735889306956" duration="615000" />
+      <workItem from="1735890222900" duration="9794000" />
+      <workItem from="1735972917186" duration="6245000" />
+      <workItem from="1736059156332" duration="11689000" />
+      <workItem from="1736147271190" duration="1701000" />
+      <workItem from="1736171002571" duration="161000" />
+      <workItem from="1736176451488" duration="483000" />
+      <workItem from="1736176972129" duration="13000" />
+      <workItem from="1736177066867" duration="5000" />
+      <workItem from="1736177312883" duration="769000" />
+      <workItem from="1736233344379" duration="5038000" />
+      <workItem from="1736256853012" duration="2351000" />
+      <workItem from="1736321446765" duration="4480000" />
+      <workItem from="1736497458190" duration="4392000" />
+      <workItem from="1736519306620" duration="3042000" />
+      <workItem from="1736649178990" duration="4492000" />
+      <workItem from="1736672948948" duration="1297000" />
+      <workItem from="1736822997511" duration="11673000" />
+      <workItem from="1736868327556" duration="885000" />
+      <workItem from="1736925595848" duration="882000" />
+      <workItem from="1737010229751" duration="973000" />
+      <workItem from="1737077991041" duration="3292000" />
+      <workItem from="1737188219078" duration="12080000" />
+      <workItem from="1737209053440" duration="555000" />
+      <workItem from="1737363734104" duration="8801000" />
+      <workItem from="1737442231713" duration="1472000" />
+      <workItem from="1737462250184" duration="2968000" />
+      <workItem from="1737512611785" duration="4375000" />
+      <workItem from="1738339331665" duration="105000" />
+      <workItem from="1738812365695" duration="2445000" />
+      <workItem from="1738832864216" duration="2885000" />
+      <workItem from="1738896214188" duration="1317000" />
+      <workItem from="1738898250243" duration="327000" />
+      <workItem from="1738898909166" duration="11286000" />
+      <workItem from="1738983832436" duration="12907000" />
+      <workItem from="1739082117181" duration="1957000" />
+      <workItem from="1739158919604" duration="455000" />
+      <workItem from="1739159382294" duration="3487000" />
+      <workItem from="1739283911242" duration="855000" />
+      <workItem from="1739435078826" duration="1000" />
+      <workItem from="1740147087038" duration="3089000" />
+      <workItem from="1740208404595" duration="5379000" />
+      <workItem from="1740553688617" duration="233000" />
+      <workItem from="1740553925178" duration="4528000" />
+      <workItem from="1740561180419" duration="1859000" />
+      <workItem from="1740581616573" duration="1655000" />
+      <workItem from="1740819845165" duration="1389000" />
+      <workItem from="1740835499867" duration="3719000" />
+      <workItem from="1740851919904" duration="599000" />
+      <workItem from="1740898105097" duration="10584000" />
+      <workItem from="1740987167900" duration="8000" />
+      <workItem from="1741012447132" duration="644000" />
+      <workItem from="1741070065874" duration="4773000" />
+      <workItem from="1741182964272" duration="1000" />
+      <workItem from="1741783944333" duration="182000" />
+      <workItem from="1741788542555" duration="1000" />
+      <workItem from="1742825487997" duration="3075000" />
+      <workItem from="1742884486551" duration="3457000" />
+      <workItem from="1742972504179" duration="2000" />
+      <workItem from="1743082445111" duration="188000" />
+      <workItem from="1743097897132" duration="634000" />
+      <workItem from="1743098908927" duration="202000" />
+      <workItem from="1743672294064" duration="8313000" />
+      <workItem from="1744458817250" duration="4249000" />
+      <workItem from="1744530633870" duration="17373000" />
+      <workItem from="1744687792420" duration="3088000" />
+      <workItem from="1744711009235" duration="7001000" />
+      <workItem from="1744771846517" duration="23119000" />
+      <workItem from="1744879755166" duration="179000" />
+      <workItem from="1744880026474" duration="5941000" />
+      <workItem from="1744898430949" duration="76000" />
+      <workItem from="1744945859013" duration="6427000" />
+      <workItem from="1744964452973" duration="9874000" />
+      <workItem from="1745035332817" duration="600000" />
+      <workItem from="1745046287233" duration="2896000" />
+      <workItem from="1745055139608" duration="692000" />
+      <workItem from="1745063032335" duration="1729000" />
+      <workItem from="1745128174706" duration="10000" />
+      <workItem from="1745225793327" duration="3414000" />
+      <workItem from="1745399855819" duration="8125000" />
+      <workItem from="1745462712601" duration="19739000" />
+      <workItem from="1745492615530" duration="8670000" />
+      <workItem from="1745549602164" duration="17876000" />
+      <workItem from="1745653070975" duration="1683000" />
+      <workItem from="1745672944850" duration="1252000" />
+      <workItem from="1745724846834" duration="17057000" />
+      <workItem from="1745809951145" duration="11245000" />
+      <workItem from="1745896690042" duration="17871000" />
+      <workItem from="1745984395784" duration="10215000" />
+      <workItem from="1746156559381" duration="599000" />
+      <workItem from="1746167671808" duration="10607000" />
+      <workItem from="1746242611797" duration="3379000" />
+      <workItem from="1746256318134" duration="11223000" />
+      <workItem from="1746328845869" duration="24155000" />
+      <workItem from="1746501725754" duration="23874000" />
+      <workItem from="1746534170390" duration="3107000" />
+      <workItem from="1746588234363" duration="28515000" />
+      <workItem from="1746674336450" duration="27821000" />
+      <workItem from="1746768489236" duration="18975000" />
+      <workItem from="1746847358940" duration="1312000" />
+      <workItem from="1746857526593" duration="2212000" />
+      <workItem from="1746859757713" duration="17566000" />
+      <workItem from="1746933104271" duration="13361000" />
+      <workItem from="1746976137976" duration="867000" />
+      <workItem from="1747025093924" duration="565000" />
+      <workItem from="1747040460511" duration="8344000" />
+      <workItem from="1747122258910" duration="484000" />
+      <workItem from="1747196760566" duration="21000" />
+      <workItem from="1747196786331" duration="18891000" />
+      <workItem from="1747291874406" duration="8162000" />
+      <workItem from="1747309190150" duration="2436000" />
+      <workItem from="1747326880366" duration="1429000" />
+      <workItem from="1747386054585" duration="6204000" />
+      <workItem from="1747417505338" duration="599000" />
+      <workItem from="1747418668232" duration="504000" />
+      <workItem from="1747645427199" duration="15189000" />
+      <workItem from="1747729827873" duration="1119000" />
+      <workItem from="1747741700343" duration="963000" />
+      <workItem from="1747747514267" duration="762000" />
+      <workItem from="1747815750123" duration="5484000" />
+      <workItem from="1747831068176" duration="8270000" />
+      <workItem from="1747900832535" duration="7865000" />
+      <workItem from="1748002677543" duration="1771000" />
+      <workItem from="1748077375048" duration="666000" />
+      <workItem from="1748251533335" duration="6713000" />
+      <workItem from="1748266703869" duration="5912000" />
+      <workItem from="1748330606964" duration="7387000" />
+      <workItem from="1748422255106" duration="433000" />
+      <workItem from="1748422722306" duration="35885000" />
+      <workItem from="1748846083525" duration="1240000" />
+      <workItem from="1748929956996" duration="11522000" />
+      <workItem from="1748946706044" duration="7630000" />
+      <workItem from="1749005251971" duration="18326000" />
+      <workItem from="1749464264196" duration="26846000" />
+      <workItem from="1749562806638" duration="1200000" />
+      <workItem from="1749612043161" duration="21808000" />
+      <workItem from="1749728151716" duration="866000" />
+      <workItem from="1749794848638" duration="71000" />
+      <workItem from="1749794927721" duration="5565000" />
+      <workItem from="1749872075795" duration="1938000" />
+      <workItem from="1749884152361" duration="10974000" />
+      <workItem from="1750073182710" duration="5662000" />
+      <workItem from="1750141625364" duration="9315000" />
+      <workItem from="1750314552261" duration="612000" />
+      <workItem from="1750335689645" duration="606000" />
+      <workItem from="1750408074302" duration="2799000" />
+      <workItem from="1750490226875" duration="12000" />
+      <workItem from="1750748141661" duration="1692000" />
+      <workItem from="1750749909979" duration="14688000" />
+      <workItem from="1750820690600" duration="1883000" />
+      <workItem from="1750831597961" duration="1302000" />
+      <workItem from="1750923857300" duration="2024000" />
+      <workItem from="1751978541761" duration="1207000" />
+      <workItem from="1752031775857" duration="3596000" />
+      <workItem from="1752059244330" duration="1271000" />
+      <workItem from="1752127613799" duration="242000" />
+      <workItem from="1755087969607" duration="211000" />
+      <workItem from="1755088193746" duration="1013000" />
+      <workItem from="1755147314373" duration="3729000" />
+      <workItem from="1755181493900" duration="1875000" />
+      <workItem from="1755238692471" duration="599000" />
+      <workItem from="1755265120516" duration="599000" />
+      <workItem from="1755322606393" duration="128000" />
+      <workItem from="1755417674681" duration="1504000" />
+      <workItem from="1755592565970" duration="1111000" />
+    </task>
+    <task id="LOCAL-00197" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749718017184</created>
+      <option name="number" value="00197" />
+      <option name="presentableId" value="LOCAL-00197" />
+      <option name="project" value="LOCAL" />
+      <updated>1749718017184</updated>
+    </task>
+    <task id="LOCAL-00198" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749718664104</created>
+      <option name="number" value="00198" />
+      <option name="presentableId" value="LOCAL-00198" />
+      <option name="project" value="LOCAL" />
+      <updated>1749718664104</updated>
+    </task>
+    <task id="LOCAL-00199" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749718732864</created>
+      <option name="number" value="00199" />
+      <option name="presentableId" value="LOCAL-00199" />
+      <option name="project" value="LOCAL" />
+      <updated>1749718732864</updated>
+    </task>
+    <task id="LOCAL-00200" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749719193182</created>
+      <option name="number" value="00200" />
+      <option name="presentableId" value="LOCAL-00200" />
+      <option name="project" value="LOCAL" />
+      <updated>1749719193182</updated>
+    </task>
+    <task id="LOCAL-00201" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749805566396</created>
+      <option name="number" value="00201" />
+      <option name="presentableId" value="LOCAL-00201" />
+      <option name="project" value="LOCAL" />
+      <updated>1749805566396</updated>
+    </task>
+    <task id="LOCAL-00202" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749884854364</created>
+      <option name="number" value="00202" />
+      <option name="presentableId" value="LOCAL-00202" />
+      <option name="project" value="LOCAL" />
+      <updated>1749884854364</updated>
+    </task>
+    <task id="LOCAL-00203" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749885578605</created>
+      <option name="number" value="00203" />
+      <option name="presentableId" value="LOCAL-00203" />
+      <option name="project" value="LOCAL" />
+      <updated>1749885578605</updated>
+    </task>
+    <task id="LOCAL-00204" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749885849939</created>
+      <option name="number" value="00204" />
+      <option name="presentableId" value="LOCAL-00204" />
+      <option name="project" value="LOCAL" />
+      <updated>1749885849940</updated>
+    </task>
+    <task id="LOCAL-00205" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749886447169</created>
+      <option name="number" value="00205" />
+      <option name="presentableId" value="LOCAL-00205" />
+      <option name="project" value="LOCAL" />
+      <updated>1749886447169</updated>
+    </task>
+    <task id="LOCAL-00206" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749886671495</created>
+      <option name="number" value="00206" />
+      <option name="presentableId" value="LOCAL-00206" />
+      <option name="project" value="LOCAL" />
+      <updated>1749886671495</updated>
+    </task>
+    <task id="LOCAL-00207" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749886901329</created>
+      <option name="number" value="00207" />
+      <option name="presentableId" value="LOCAL-00207" />
+      <option name="project" value="LOCAL" />
+      <updated>1749886901329</updated>
+    </task>
+    <task id="LOCAL-00208" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749886935203</created>
+      <option name="number" value="00208" />
+      <option name="presentableId" value="LOCAL-00208" />
+      <option name="project" value="LOCAL" />
+      <updated>1749886935203</updated>
+    </task>
+    <task id="LOCAL-00209" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749887102857</created>
+      <option name="number" value="00209" />
+      <option name="presentableId" value="LOCAL-00209" />
+      <option name="project" value="LOCAL" />
+      <updated>1749887102857</updated>
+    </task>
+    <task id="LOCAL-00210" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749887172022</created>
+      <option name="number" value="00210" />
+      <option name="presentableId" value="LOCAL-00210" />
+      <option name="project" value="LOCAL" />
+      <updated>1749887172022</updated>
+    </task>
+    <task id="LOCAL-00211" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749887414677</created>
+      <option name="number" value="00211" />
+      <option name="presentableId" value="LOCAL-00211" />
+      <option name="project" value="LOCAL" />
+      <updated>1749887414677</updated>
+    </task>
+    <task id="LOCAL-00212" summary="回档">
+      <option name="closed" value="true" />
+      <created>1749887560182</created>
+      <option name="number" value="00212" />
+      <option name="presentableId" value="LOCAL-00212" />
+      <option name="project" value="LOCAL" />
+      <updated>1749887560182</updated>
+    </task>
+    <task id="LOCAL-00213" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749889032552</created>
+      <option name="number" value="00213" />
+      <option name="presentableId" value="LOCAL-00213" />
+      <option name="project" value="LOCAL" />
+      <updated>1749889032552</updated>
+    </task>
+    <task id="LOCAL-00214" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749889304621</created>
+      <option name="number" value="00214" />
+      <option name="presentableId" value="LOCAL-00214" />
+      <option name="project" value="LOCAL" />
+      <updated>1749889304621</updated>
+    </task>
+    <task id="LOCAL-00215" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749889504548</created>
+      <option name="number" value="00215" />
+      <option name="presentableId" value="LOCAL-00215" />
+      <option name="project" value="LOCAL" />
+      <updated>1749889504548</updated>
+    </task>
+    <task id="LOCAL-00216" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749889742746</created>
+      <option name="number" value="00216" />
+      <option name="presentableId" value="LOCAL-00216" />
+      <option name="project" value="LOCAL" />
+      <updated>1749889742746</updated>
+    </task>
+    <task id="LOCAL-00217" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749890279896</created>
+      <option name="number" value="00217" />
+      <option name="presentableId" value="LOCAL-00217" />
+      <option name="project" value="LOCAL" />
+      <updated>1749890279896</updated>
+    </task>
+    <task id="LOCAL-00218" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749890470815</created>
+      <option name="number" value="00218" />
+      <option name="presentableId" value="LOCAL-00218" />
+      <option name="project" value="LOCAL" />
+      <updated>1749890470815</updated>
+    </task>
+    <task id="LOCAL-00219" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749890657707</created>
+      <option name="number" value="00219" />
+      <option name="presentableId" value="LOCAL-00219" />
+      <option name="project" value="LOCAL" />
+      <updated>1749890657707</updated>
+    </task>
+    <task id="LOCAL-00220" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749890693963</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1749890693963</updated>
+    </task>
+    <task id="LOCAL-00221" summary="测试">
+      <option name="closed" value="true" />
+      <created>1749891860884</created>
+      <option name="number" value="00221" />
+      <option name="presentableId" value="LOCAL-00221" />
+      <option name="project" value="LOCAL" />
+      <updated>1749891860884</updated>
+    </task>
+    <task id="LOCAL-00222" summary="关节控制测试">
+      <option name="closed" value="true" />
+      <created>1750076192046</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1750076192046</updated>
+    </task>
+    <task id="LOCAL-00223" summary="关节控制测试">
+      <option name="closed" value="true" />
+      <created>1750080188241</created>
+      <option name="number" value="00223" />
+      <option name="presentableId" value="LOCAL-00223" />
+      <option name="project" value="LOCAL" />
+      <updated>1750080188241</updated>
+    </task>
+    <task id="LOCAL-00224" summary="补全缺失的动态库">
+      <option name="closed" value="true" />
+      <created>1750141803070</created>
+      <option name="number" value="00224" />
+      <option name="presentableId" value="LOCAL-00224" />
+      <option name="project" value="LOCAL" />
+      <updated>1750141803070</updated>
+    </task>
+    <task id="LOCAL-00225" summary="补全缺失的动态库">
+      <option name="closed" value="true" />
+      <created>1750142402260</created>
+      <option name="number" value="00225" />
+      <option name="presentableId" value="LOCAL-00225" />
+      <option name="project" value="LOCAL" />
+      <updated>1750142402260</updated>
+    </task>
+    <task id="LOCAL-00226" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750142795221</created>
+      <option name="number" value="00226" />
+      <option name="presentableId" value="LOCAL-00226" />
+      <option name="project" value="LOCAL" />
+      <updated>1750142795221</updated>
+    </task>
+    <task id="LOCAL-00227" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750143483267</created>
+      <option name="number" value="00227" />
+      <option name="presentableId" value="LOCAL-00227" />
+      <option name="project" value="LOCAL" />
+      <updated>1750143483267</updated>
+    </task>
+    <task id="LOCAL-00228" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750144438344</created>
+      <option name="number" value="00228" />
+      <option name="presentableId" value="LOCAL-00228" />
+      <option name="project" value="LOCAL" />
+      <updated>1750144438344</updated>
+    </task>
+    <task id="LOCAL-00229" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750144835800</created>
+      <option name="number" value="00229" />
+      <option name="presentableId" value="LOCAL-00229" />
+      <option name="project" value="LOCAL" />
+      <updated>1750144835800</updated>
+    </task>
+    <task id="LOCAL-00230" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750145058214</created>
+      <option name="number" value="00230" />
+      <option name="presentableId" value="LOCAL-00230" />
+      <option name="project" value="LOCAL" />
+      <updated>1750145058214</updated>
+    </task>
+    <task id="LOCAL-00231" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750145119996</created>
+      <option name="number" value="00231" />
+      <option name="presentableId" value="LOCAL-00231" />
+      <option name="project" value="LOCAL" />
+      <updated>1750145119996</updated>
+    </task>
+    <task id="LOCAL-00232" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750146484069</created>
+      <option name="number" value="00232" />
+      <option name="presentableId" value="LOCAL-00232" />
+      <option name="project" value="LOCAL" />
+      <updated>1750146484070</updated>
+    </task>
+    <task id="LOCAL-00233" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750147294134</created>
+      <option name="number" value="00233" />
+      <option name="presentableId" value="LOCAL-00233" />
+      <option name="project" value="LOCAL" />
+      <updated>1750147294134</updated>
+    </task>
+    <task id="LOCAL-00234" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750149844792</created>
+      <option name="number" value="00234" />
+      <option name="presentableId" value="LOCAL-00234" />
+      <option name="project" value="LOCAL" />
+      <updated>1750149844792</updated>
+    </task>
+    <task id="LOCAL-00235" summary="修复模式错误">
+      <option name="closed" value="true" />
+      <created>1750151250755</created>
+      <option name="number" value="00235" />
+      <option name="presentableId" value="LOCAL-00235" />
+      <option name="project" value="LOCAL" />
+      <updated>1750151250755</updated>
+    </task>
+    <task id="LOCAL-00236" summary="修复摄像头名称">
+      <option name="closed" value="true" />
+      <created>1750408202162</created>
+      <option name="number" value="00236" />
+      <option name="presentableId" value="LOCAL-00236" />
+      <option name="project" value="LOCAL" />
+      <updated>1750408202163</updated>
+    </task>
+    <task id="LOCAL-00237" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750923890174</created>
+      <option name="number" value="00237" />
+      <option name="presentableId" value="LOCAL-00237" />
+      <option name="project" value="LOCAL" />
+      <updated>1750923890174</updated>
+    </task>
+    <task id="LOCAL-00238" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750924096819</created>
+      <option name="number" value="00238" />
+      <option name="presentableId" value="LOCAL-00238" />
+      <option name="project" value="LOCAL" />
+      <updated>1750924096819</updated>
+    </task>
+    <task id="LOCAL-00239" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750924178719</created>
+      <option name="number" value="00239" />
+      <option name="presentableId" value="LOCAL-00239" />
+      <option name="project" value="LOCAL" />
+      <updated>1750924178719</updated>
+    </task>
+    <task id="LOCAL-00240" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750924210645</created>
+      <option name="number" value="00240" />
+      <option name="presentableId" value="LOCAL-00240" />
+      <option name="project" value="LOCAL" />
+      <updated>1750924210645</updated>
+    </task>
+    <task id="LOCAL-00241" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750924300322</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1750924300322</updated>
+    </task>
+    <task id="LOCAL-00242" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750924407751</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1750924407751</updated>
+    </task>
+    <task id="LOCAL-00243" summary="修复错误">
+      <option name="closed" value="true" />
+      <created>1750924508875</created>
+      <option name="number" value="00243" />
+      <option name="presentableId" value="LOCAL-00243" />
+      <option name="project" value="LOCAL" />
+      <updated>1750924508875</updated>
+    </task>
+    <task id="LOCAL-00244" summary="更新代码">
+      <option name="closed" value="true" />
+      <created>1755153508794</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1755153508794</updated>
+    </task>
+    <task id="LOCAL-00245" summary="更新代码">
+      <option name="closed" value="true" />
+      <created>1755155048434</created>
+      <option name="number" value="00245" />
+      <option name="presentableId" value="LOCAL-00245" />
+      <option name="project" value="LOCAL" />
+      <updated>1755155048434</updated>
+    </task>
+    <option name="localTasksCounter" value="246" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="优化代码" />
+    <MESSAGE value="添加模型转换" />
+    <MESSAGE value="vla测试" />
+    <MESSAGE value="添加uvc摄像头" />
+    <MESSAGE value="修复batch_size" />
+    <MESSAGE value="更新脚本" />
+    <MESSAGE value="修复缺失的值" />
+    <MESSAGE value="扰动测试" />
+    <MESSAGE value="添加范围限制" />
+    <MESSAGE value="简化按键" />
+    <MESSAGE value="修复复位" />
+    <MESSAGE value="设置参数" />
+    <MESSAGE value="Merge branch 'master' of https://gitee.com/arx_enterprise/arx_model_ros2&#10;&#10;# Conflicts:&#10;#&#9;act/msg/msg/__init__.py" />
+    <MESSAGE value="修复话题" />
+    <MESSAGE value="初步测试" />
+    <MESSAGE value="修改类型错误" />
+    <MESSAGE value="修改配置文件" />
+    <MESSAGE value="回档" />
+    <MESSAGE value="测试" />
+    <MESSAGE value="关节控制测试" />
+    <MESSAGE value="补全缺失的动态库" />
+    <MESSAGE value="修复模式错误" />
+    <MESSAGE value="修复摄像头名称" />
+    <MESSAGE value="修复错误" />
+    <MESSAGE value="更新代码" />
+    <option name="LAST_COMMIT_MESSAGE" value="更新代码" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/inference_py$watch.coverage" NAME="watch 覆盖结果" MODIFIED="1746173164780" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/rename_group_py$1.coverage" NAME="1 覆盖结果" MODIFIED="1748846540266" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Downloads" />
+    <SUITE FILE_PATH="coverage/utils_py$watch.coverage" NAME="watch 覆盖结果" MODIFIED="1731137305613" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/replay_py$test.coverage" NAME="test 覆盖结果" MODIFIED="1737364771506" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/act$train.coverage" NAME="train 覆盖结果" MODIFIED="1747748245151" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/inference_py$train1.coverage" NAME="train1 覆盖结果" MODIFIED="1736070981153" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/rename_group_py$visualize.coverage" NAME="visualize 覆盖结果" MODIFIED="1748268472848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/train_py$collect.coverage" NAME="collect 覆盖结果" MODIFIED="1734714097845" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/replay_py$rename.coverage" NAME="rename 覆盖结果" MODIFIED="1737204503410" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/utils_py$rename_group.coverage" NAME="rename_group 覆盖结果" MODIFIED="1741784104732" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/collect_py$test.coverage" NAME="test 覆盖结果" MODIFIED="1740210616307" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/collect_py$train.coverage" NAME="train 覆盖结果" MODIFIED="1739022395836" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/train_py$visualize.coverage" NAME="visualize 覆盖结果" MODIFIED="1734686062126" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/act$test.coverage" NAME="test 覆盖结果" MODIFIED="1746713568306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/inference_py$visualize.coverage" NAME="visualize 覆盖结果" MODIFIED="1747061862209" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/collect_py$visualize.coverage" NAME="visualize 覆盖结果" MODIFIED="1740580310302" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/inference_py$noise.coverage" NAME="noise 覆盖结果" MODIFIED="1744897177383" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/act$visualize.coverage" NAME="visualize 覆盖结果" MODIFIED="1747389208432" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/visualize_py$visualize.coverage" NAME="visualize 覆盖结果" MODIFIED="1740836712115" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/visualize_py$inference.coverage" NAME="inference 覆盖结果" MODIFIED="1740938654759" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/replay_py$visualize.coverage" NAME="visualize 覆盖结果" MODIFIED="1737080219576" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/inference_py$replay.coverage" NAME="replay 覆盖结果" MODIFIED="1746173159497" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/act$rename_group.coverage" NAME="rename_group 覆盖结果" MODIFIED="1747748268365" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/rename_py$rename.coverage" NAME="rename 覆盖结果" MODIFIED="1735283825055" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/collect_py$rename_datasets.coverage" NAME="rename_datasets 覆盖结果" MODIFIED="1737535868142" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/inference_py$utils.coverage" NAME="utils 覆盖结果" MODIFIED="1746864982464" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
+    <SUITE FILE_PATH="coverage/rename_group_py$test.coverage" NAME="test 覆盖结果" MODIFIED="1748577572265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/inference_py$train.coverage" NAME="train 覆盖结果" MODIFIED="1750769067107" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/visualize_py$rename_group.coverage" NAME="rename_group 覆盖结果" MODIFIED="1740937610977" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/train_py$train.coverage" NAME="train 覆盖结果" MODIFIED="1734885990965" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/utils_py$inference.coverage" NAME="inference 覆盖结果" MODIFIED="1731142401169" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/rename_group_py$rename_group.coverage" NAME="rename_group 覆盖结果" MODIFIED="1748941236439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/train_py$inference.coverage" NAME="inference 覆盖结果" MODIFIED="1734714275361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/visualize_py$train.coverage" NAME="train 覆盖结果" MODIFIED="1741012482688" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/inference_py$collect.coverage" NAME="collect 覆盖结果" MODIFIED="1746631091865" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/train_py$replay.coverage" NAME="replay 覆盖结果" MODIFIED="1734714301829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/collect_py$inference.coverage" NAME="inference 覆盖结果" MODIFIED="1740212037713" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/inference_py$inference.coverage" NAME="inference 覆盖结果" MODIFIED="1746346207265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/act$collect.coverage" NAME="collect 覆盖结果" MODIFIED="1729500502190" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/visualize_py$collect.coverage" NAME="collect 覆盖结果" MODIFIED="1730387657551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/inference_py$export.coverage" NAME="export 覆盖结果" MODIFIED="1746977004713" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/rename_group_py$train.coverage" NAME="train 覆盖结果" MODIFIED="1748943339089" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/collect_py$rename.coverage" NAME="rename 覆盖结果" MODIFIED="1731316886310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/inference_py$record.coverage" NAME="record 覆盖结果" MODIFIED="1746525039660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/inference_py$test.coverage" NAME="test 覆盖结果" MODIFIED="1746876378337" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/replay_py$rename_datasets.coverage" NAME="rename_datasets 覆盖结果" MODIFIED="1737380341620" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/inference_py$automatic.coverage" NAME="automatic 覆盖结果" MODIFIED="1746346592304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/replay_py$train1.coverage" NAME="train1 覆盖结果" MODIFIED="1736864335660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/replay_py$train.coverage" NAME="train 覆盖结果" MODIFIED="1737364919621" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/inference_py$rename_group.coverage" NAME="rename_group 覆盖结果" MODIFIED="1750766515863" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/utils_py$train.coverage" NAME="train 覆盖结果" MODIFIED="1742885933431" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+  </component>
+</project>
