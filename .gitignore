@@ -1,3 +1,9 @@
 # Dataset
 datasets/
 datasets_lerobot/
+
+# models
+act/
+
+# cache 
+__pycache__/
