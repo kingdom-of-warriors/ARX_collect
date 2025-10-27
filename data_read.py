@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 
 # 打开文件
-with h5py.File('/mnt/inspurfs/evla1_t/lijiarui/datasets/play_games_collector0_20251022/episode_0.hdf5', 'r') as f:
+with h5py.File('/home/arx/ARX_collect/datasets/play_games_collector0_20251022/episode_0.hdf5', 'r') as f:
     # ===== 顶层属性 =====
     print("Attributes:")
     print(f"  sim: {f.attrs['sim']}")              # False (真实机器人)
@@ -25,8 +25,11 @@ with h5py.File('/mnt/inspurfs/evla1_t/lijiarui/datasets/play_games_collector0_20
     print(f"  left_wrist: {f['observations/images/left_wrist'].shape}") # (T, padded_size)
     print(f"  right_wrist: {f['observations/images/right_wrist'].shape}") # (T, padded_size)
     
-    first_qpos = f['observations/qpos'][0]
+    first_qpos = f['observations/qpos'][53]
     print(f"\nFirst frame qpos: {first_qpos}")
+
+    first_eef = f['observations/eef'][53]
+    print(f"\nFirst frame eef: {first_eef}")
     
     # ===== 计算平均值 =====
     # 计算所有帧的 action 平均值

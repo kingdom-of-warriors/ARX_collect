@@ -5,25 +5,26 @@ workspace=$(pwd)
 shell_type=${SHELL##*/}
 shell_exec="exec $shell_type"
 
-# CAN
-gnome-terminal -t "can1" -x bash -c "cd ${workspace}; cd ../../LIFT/ARX_CAN/arx_can; ./arx_can1.sh; exec bash;"
-sleep 0.3
-gnome-terminal -t "can3" -x bash -c "cd ${workspace}; cd ../../LIFT/ARX_CAN/arx_can; ./arx_can3.sh; exec bash;"
-sleep 0.3
-gnome-terminal -t "can5" -x bash -c "cd ${workspace}; cd ../../LIFT/ARX_CAN/arx_can; ./arx_can5.sh; exec bash;"
-sleep 0.3
+# CAN 配置
+gnome-terminal -t "can" -x sudo bash -c "cd /home/arx/LIFT/ARX_CAN/arx_can; ./arx_can1.sh; exec bash;"
+gnome-terminal -t "can" -x sudo bash -c "cd /home/arx/LIFT/ARX_CAN/arx_can; ./arx_can3.sh; exec bash;"
+gnome-terminal -t "can" -x sudo bash -c "cd /home/arx/LIFT/ARX_CAN/arx_can; ./arx_can5.sh; exec bash;"
+sleep 3 # 等待CAN启动
 
-# Body
-gnome-terminal --title="body" -x $shell_type -i -c "cd ../../LIFT/body/ROS2; source install/setup.bash; ros2 launch arx_lift_controller lift.launch.py; $shell_exec"
-sleep 1
-
-# Lift
-gnome-terminal --title="lift" -x $shell_type -i -c "cd ../../LIFT/ARX_X5/ROS2/X5_ws; source install/setup.bash; ros2 launch arx_x5_controller open_double_arm.launch.py; $shell_exec"
-sleep 1
-
-# Realsense
-gnome-terminal --title="realsense" -x $shell_type -i -c "cd ${workspace}; cd ../realsense; ./realsense.sh; $shell_exec"
+# 启动升降节点
+gnome-terminal --title="body" -x bash -c "cd /home/arx/LIFT/body/ROS2; source install/setup.bash; ros2 launch arx_lift_controller lift.launch.py; exec bash;"
 sleep 3
 
+# 启动相机节点
+gnome-terminal --title="realsense" -x bash -c "cd /home/arx/ROS2_LIFT_Play/realsense/; ./realsense.sh; exec bash;"
+sleep 3
+
+# 设置升降高度 (0-20)
+gnome-terminal -t "head_pose" -x bash -c "cd /home/arx/LIFT/body/ROS2; source install/setup.bash && ros2 topic pub -1 /lift_height_cmd arm_control/msg/PosCmd '{height: 14.0}'; exec bash;"
+sleep 2
+
+# 机械臂复位
+gnome-terminal --title="lift" -x bash -c "cd /home/arx/LIFT/ARX_X5/ROS2/X5_ws; source install/setup.bash; ros2 launch arx_x5_controller open_double_arm.launch.py; exec bash;"
+
 # Inference
-gnome-terminal --title="inference" -x $shell_type -i -c "cd ${workspace}; cd ../act; conda activate act; python inference.py; $shell_exec"   
+gnome-terminal --title="inference" -x $shell_type -i -c "cd /home/arx/ROS2_LIFT_Play/act; source ~/miniconda3/etc/profile.d/conda.sh; conda activate act; python inference.py; $shell_exec"   

@@ -167,7 +167,7 @@ def collect_information(args, collector):
     count = 0
     rate = Rate(args.frame_rate)
     gripper_idx = [6, 13]
-    gripper_close_threshold = 3
+    gripper_close_threshold = -1.0
     
     print("\nStarting data collection... Press 'e' to END this trajectory recording")
     
@@ -184,11 +184,13 @@ def collect_information(args, collector):
         action = deepcopy(obs_dict['qpos'])
         action_eef = deepcopy(obs_dict['eef'])
 
+        # 对于采集的数据来说，夹爪打开时为0，闭合时为-3出头
         for idx in gripper_idx:
-            action[idx] = 0 if action[idx] < gripper_close_threshold else action[idx]
+            action[idx] = 0 if action[idx] > gripper_close_threshold else action[idx]
+            action_eef[idx] = 0 if action_eef[idx] > gripper_close_threshold else action_eef[idx]
         
-        action_eef[6] = 0 if action_eef[6] < gripper_close_threshold else action_eef[6]
-        action_eef[13] = 0 if action_eef[13] < gripper_close_threshold else action_eef[13]
+        action_eef[6] = 0 if action_eef[6] > gripper_close_threshold else action_eef[6]
+        action_eef[13] = 0 if action_eef[13] > gripper_close_threshold else action_eef[13]
         
         timesteps.append(obs_dict)
         actions.append(action)
