@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 
 # 打开文件
-with h5py.File('/home/arx/ROS2_LIFT_Play/act/datasets/episode_0.hdf5', 'r') as f:
+with h5py.File('/mnt/inspurfs/evla1_t/lijiarui/datasets/play_games_collector0_20251022/episode_0.hdf5', 'r') as f:
     # ===== 顶层属性 =====
     print("Attributes:")
     print(f"  sim: {f.attrs['sim']}")              # False (真实机器人)
@@ -25,36 +25,20 @@ with h5py.File('/home/arx/ROS2_LIFT_Play/act/datasets/episode_0.hdf5', 'r') as f
     print(f"  left_wrist: {f['observations/images/left_wrist'].shape}") # (T, padded_size)
     print(f"  right_wrist: {f['observations/images/right_wrist'].shape}") # (T, padded_size)
     
-    # ===== 读取示例数据 =====
-    # 读取第一帧的关节位置
     first_qpos = f['observations/qpos'][0]
     print(f"\nFirst frame qpos: {first_qpos}")
     
-    # 读取第一帧的图像（需要解压缩）
-    first_image_compressed = f['observations/images/head'][0]
-    first_image = cv2.imdecode(first_image_compressed, 1)
-    print(f"\nFirst frame image shape: {first_image}")
+    # ===== 计算平均值 =====
+    # 计算所有帧的 action 平均值
+    action_mean = np.mean(f['action'][:], axis=0)
+    print(f"\nAction mean across all frames: {action_mean}")
     
-    # ===== 提取视频 =====
-    print("\n提取头部相机视频...")
-    output_video = '/home/arx/ROS2_LIFT_Play/act/datasets/episode_0_head.mp4'
+    # 计算所有帧的 qpos 平均值
+    qpos_mean = np.mean(f['observations/qpos'][:], axis=0)
+    print(f"\nQpos mean across all frames: {qpos_mean}")
     
-    # 获取视频参数
-    head_images = f['observations/images/head']
-    total_frames = len(head_images)
-    height, width = first_image.shape[:2]
-    fps = 30
     
-    # 创建视频写入器
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(output_video, fourcc, fps, (width, height))
-    
-    # 写入所有帧
-    for i in range(total_frames):
-        img = cv2.imdecode(head_images[i], 1)
-        if img is not None:
-            out.write(img)
-        print(f"\r处理进度: {i+1}/{total_frames}", end='')
-    
-    out.release()
-    print(f"\n视频已保存: {output_video}")
+    # # 读取第一帧的图像（需要解压缩）
+    # first_image_compressed = f['observations/images/head'][0]
+    # first_image = cv2.imdecode(first_image_compressed, 1)
+    # print(f"\nFirst frame image shape: {first_image}")
