@@ -27,4 +27,4 @@ sleep 2
 gnome-terminal --title="lift" -x bash -c "cd /home/arx/LIFT/ARX_X5/ROS2/X5_ws; source install/setup.bash; ros2 launch arx_x5_controller open_double_arm.launch.py; exec bash;"
 
 # Inference
-gnome-terminal --title="inference" -x $shell_type -i -c "cd /home/arx/ROS2_LIFT_Play/act; source ~/miniconda3/etc/profile.d/conda.sh; conda activate act; python inference.py; $shell_exec"   
+gnome-terminal --title="inference" -x bash -c "cd /home/arx/ROS2_LIFT_Play/act; source ~/miniconda3/etc/profile.d/conda.sh; conda activate act; python inference.py; $shell_exec"   

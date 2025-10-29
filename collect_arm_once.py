@@ -185,12 +185,12 @@ def collect_information(args, collector):
         action_eef = deepcopy(obs_dict['eef'])
 
         # 对于采集的数据来说，夹爪打开时为0，闭合时为-3出头
-        for idx in gripper_idx:
-            action[idx] = 0 if action[idx] > gripper_close_threshold else action[idx]
-            action_eef[idx] = 0 if action_eef[idx] > gripper_close_threshold else action_eef[idx]
+        # for idx in gripper_idx:
+        #     action[idx] = 0 if action[idx] > gripper_close_threshold else action[idx]
+        #     action_eef[idx] = 0 if action_eef[idx] > gripper_close_threshold else action_eef[idx]
         
-        action_eef[6] = 0 if action_eef[6] > gripper_close_threshold else action_eef[6]
-        action_eef[13] = 0 if action_eef[13] > gripper_close_threshold else action_eef[13]
+        # action_eef[6] = 0 if action_eef[6] > gripper_close_threshold else action_eef[6]
+        # action_eef[13] = 0 if action_eef[13] > gripper_close_threshold else action_eef[13]
         
         timesteps.append(obs_dict)
         actions.append(action)

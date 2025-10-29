@@ -21,7 +21,7 @@ gnome-terminal --title="realsense" -x bash -c "cd /home/arx/ROS2_LIFT_Play/reals
 sleep 3
 
 # 设置升降高度 (0-20)
-gnome-terminal -t "head_pose" -x bash -c "cd /home/arx/LIFT/body/ROS2; source install/setup.bash && ros2 topic pub -1 /lift_height_cmd arm_control/msg/PosCmd '{height: 0.0}'; exec bash;"
+gnome-terminal -t "head_pose" -x bash -c "cd /home/arx/LIFT/body/ROS2; source install/setup.bash && ros2 topic pub -1 /lift_height_cmd arm_control/msg/PosCmd '{height: 14.0}'; exec bash;"
 sleep 2
 
 # 主循环
@@ -45,7 +45,7 @@ do
     (
         source ~/miniconda3/etc/profile.d/conda.sh
         conda activate act
-        python collect_arm_once.py --frame_rate 30 --task "play_games"
+        python collect_arm_once.py --frame_rate 30 --task "pick_blockings"
     )
     echo "-> 数据采集程序已结束。"
 
