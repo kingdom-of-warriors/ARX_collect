@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 
 # 打开文件
-with h5py.File('/home/arx/ARX_collect/datasets/play_games_collector0_20251022/episode_0.hdf5', 'r') as f:
+with h5py.File('/mnt/inspurfs/evla1_t/lijiarui/datasets/pick_blockings_2_collector0_20251029/episode_24.hdf5', 'r') as f:
     # ===== 顶层属性 =====
     print("Attributes:")
     print(f"  sim: {f.attrs['sim']}")              # False (真实机器人)

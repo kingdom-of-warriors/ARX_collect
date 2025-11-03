@@ -1,0 +1,2 @@
+torchrun --nproc_per_node=2 act/train_ddp.py --policy_class Diffusion --ckpt_dir /mnt/petrelfs/lijiarui/ARX_collect/act/weights/dp_blocking_1
+python act/train.py --policy_class Diffusion --ckpt_dir /mnt/petrelfs/lijiarui/ARX_collect/act/weights/dp_blocking_1
