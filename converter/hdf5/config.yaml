@@ -1,0 +1,16 @@
+repo_id: "picking_blocking_v1"
+raw_data_dir: "/mnt/inspurfs/evla1_t/lijiarui/datasets/pick_blockings_2_collector0_20251029"
+output_dir: /mnt/inspurfs/evla1_t/lijiarui/datasets/lerobot_dataset
+fps: 30
+resolution: [480, 640]
+image_writer_processes: 4
+image_writer_threads: 16
+state_dim: 14
+action_dim: 14
+eef_dim: 14
+action_eef_dim: 14
+camera_names: ['head', 'left_wrist', 'right_wrist']
+robot_type: ARX_AC_ONE
+
+# Batch processing configuration
+batch_size: 32
