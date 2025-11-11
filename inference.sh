@@ -20,7 +20,7 @@ gnome-terminal --title="realsense" -x bash -c "cd /home/arx/ROS2_LIFT_Play/reals
 sleep 3
 
 # 设置升降高度 (0-20)
-gnome-terminal -t "head_pose" -x bash -c "cd /home/arx/LIFT/body/ROS2; source install/setup.bash && ros2 topic pub -1 /lift_height_cmd arm_control/msg/PosCmd '{height: 14.0}'; exec bash;"
+gnome-terminal -t "head_pose" -x bash -c "cd /home/arx/LIFT/body/ROS2; source install/setup.bash && ros2 topic pub -1 /ARX_VR_L arm_control/msg/PosCmd '{height: 14.0}'; exec bash;"
 sleep 2
 
 # 机械臂复位

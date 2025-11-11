@@ -12,11 +12,12 @@ ROOT = FILE.parents[0]
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
     os.chdir(str(ROOT))
-
+    
+import cv2
+from datetime import datetime
 
 import argparse
 import collections
-import cv2
 import yaml
 from einops import rearrange
 import rclpy
@@ -38,6 +39,7 @@ import numpy as np
 
 # PI0 加载模型
 from lerobot.policies.pi0.modeling_pi0 import PI0Policy
+
 
 np.set_printoptions(linewidth=200)
 np.set_printoptions(suppress=True)
@@ -106,19 +108,6 @@ def auto_model_from_pretrained(path, **kwargs):
     return PI0Policy.from_pretrained(path, **kwargs).to(map_location)
 
 
-def get_image(observation, camera_names):
-    curr_images = []
-    for cam_name in camera_names:
-        # print(f'{cam_name=}')
-        curr_image = rearrange(observation['images'][cam_name], 'h w c -> c h w')
-        curr_images.append(curr_image)
-
-    curr_image = np.stack(curr_images, axis=0)
-    curr_image = torch.from_numpy(curr_image / 255.0).float().cuda().unsqueeze(0)
-
-    return curr_image
-
-
 def apply_gripper_gate(action_value, gate):
     min_gripper = 0
     max_gripper = 5
@@ -126,24 +115,10 @@ def apply_gripper_gate(action_value, gate):
     return min_gripper if action_value < gate else max_gripper
 
 
-def get_obervations(args, timestep, ros_operator):
-    global obs_dict
-
-    rate = Rate(args.frame_rate)
-    while True and rclpy.ok():
-        obs_dict = ros_operator.get_observation(ts=timestep)
-        if not obs_dict:
-            print("syn fail")
-            rate.sleep()
-
-            continue
-
-        return obs_dict
-
-
 def init_robot(ros_operator, connected_event, start_event):
-    init0 = [0, 0, 0, 0, 0, 0, 4]
-    init1 = [0, 0, 0, 0, 0, 0, 0]
+    # 采集数据时，-3.36是张开而0是关闭
+    init0 = [0, 0, 0, 0, 0, 0, 4] # 夹爪关闭
+    init1 = [0, 0, 0, 0, 0, 0, 0] # 夹爪张开
 
     # 发布初始位置（关节空间姿态）
     ros_operator.follow_arm_publish_continuous(init0, init0)
@@ -152,7 +127,7 @@ def init_robot(ros_operator, connected_event, start_event):
     connected_event.set()
     start_event.wait()
 
-    ros_operator.follow_arm_publish_continuous(init1, init1)
+    ros_operator.follow_arm_publish_continuous(init0, init0)
 
 
 def cleanup_shm(names):
@@ -240,7 +215,7 @@ def ros_process(args, meta_queue, connected_event, start_event, shm_ready_event)
 
             gripper_idx = [6, 13]
 
-            left_action = action[:gripper_idx[0] + 1]  # 取8维度
+            left_action = action[:gripper_idx[0] + 1]
             if gripper_gate != -1:
                 left_action[gripper_idx[0]] = apply_gripper_gate(left_action[gripper_idx[0]], gripper_gate)
 
@@ -261,66 +236,94 @@ def ros_process(args, meta_queue, connected_event, start_event, shm_ready_event)
 
 def inference_process(args, shm_dict, shapes, ros_proc):
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
-    H, W = 224, 224
     model = PI0Policy.from_pretrained(args.ckpt_path).to(device)
-    model.eval()  # 切换到评估模式
+    model.eval()
     print("模型加载成功。")
 
-    task_prompt = ["pick up the red block"]
-    repo_id = ["dual_arm_picking"]  # 必须与模型训练时的 repo_id 匹配
+    task_prompt = ["Use the right arm to pick up the blue block and place it in the transparent box"]
+    repo_id = ["picking_blocking_v3_cut"]
 
-    while ros_proc.is_alive():
-        timestep = 0
+    try:
+        h, w, _ = shapes["images"]["right_wrist"]
+        fps = args.frame_rate
+        print(f"视频录制参数已设置: (W: {w}, H: {h}, FPS: {fps})")
+    except Exception as e:
+        print(f"!!! 警告: 无法从 'shapes' 获取视频参数: {e} !!!")
+        w, h, fps = (None, None, None)
 
-        while timestep < args.max_publish_step and ros_proc.is_alive():
-            obs_dict = {"images": {}, "eef": None, "qpos": None, "qvel": None,
-                        "effort": None, "robot_base": None, "base_velocity": None}
+    # finally 才能访问到
+    video_writer = None
+    video_filename = ""
 
-            # 读取图像数据
-            for cam in args.camera_names:
-                shm, shape, dtype = shm_dict[cam]
-                obs_dict["images"][cam] = np.ndarray(shape, dtype=dtype, buffer=shm.buf).copy()
+    try:
+        while ros_proc.is_alive():
+            timestep = 0
             
-            # 读取状态数据
-            for state_key in shapes["states"]: # 假设 states 包含 'qpos' 和 'eef'
-                shm, shape, dtype = shm_dict[state_key]
-                obs_dict[state_key] = np.ndarray(shape, dtype=dtype, buffer=shm.buf).copy()
+            # (每个回合开始时)
+            if w is not None and video_writer is None: # 仅在未初始化时创建
+                try:
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    video_filename = f"inference_right_wrist_{timestamp}.mp4"
+                    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+                    video_writer = cv2.VideoWriter(video_filename, fourcc, float(fps), (w, h))
+                    print(f"--- 正在录制 'right_wrist' 视频到 {video_filename} ---")
+                except Exception as e:
+                    print(f"!!! 警告: 无法创建 VideoWriter: {e} !!!")
+                    video_writer = None
 
-            with torch.inference_mode():
-                input_data = {}
+            while timestep < args.max_publish_step and ros_proc.is_alive():
+                obs_dict = {"images": {}, "eef": None, "qpos": None, "qvel": None,
+                            "effort": None, "robot_base": None, "base_velocity": None}
 
-                # 处理图像 (HWC -> CHW, Resize, ToTensor, ToDevice, Batch)
-                img_head = obs_dict["images"]["head"]
-                img_head = rearrange(img_head, 'h w c -> c h w') # (C, H, W)
-                input_data["observation.images.head"] = torch.from_numpy(img_head / 255.0).float().to(device).unsqueeze(0)
+                for cam in args.camera_names:
+                    shm, shape, dtype = shm_dict[cam]
+                    obs_dict["images"][cam] = np.ndarray(shape, dtype=dtype, buffer=shm.buf).copy()
+                for state_key in shapes["states"]:
+                    shm, shape, dtype = shm_dict[state_key]
+                    obs_dict[state_key] = np.ndarray(shape, dtype=dtype, buffer=shm.buf).copy()
 
-                img_left = obs_dict["images"]["left_wrist"]
-                img_left = rearrange(img_left, 'h w c -> c h w')
-                input_data["observation.images.left_wrist"] = torch.from_numpy(img_left / 255.0).float().to(device).unsqueeze(0)
-                
-                img_right = obs_dict["images"]["right_wrist"]
-                img_right = rearrange(img_right, 'h w c -> c h w')
-                input_data["observation.images.right_wrist"] = torch.from_numpy(img_right / 255.0).float().to(device).unsqueeze(0)
-                
-                # 处理状态 (ToFloat, ToTensor, ToDevice, Batch)
-                input_data["observation.state"] = torch.from_numpy(obs_dict['qpos']).float().to(device).unsqueeze(0)
-                input_data["observation.eef"] = torch.from_numpy(obs_dict['eef']).float().to(device).unsqueeze(0)
-                
-                # 添加文本输入
-                input_data["task"] = task_prompt
-                input_data["repo_id"] = repo_id
+                # 写入视频帧
+                if video_writer is not None:
+                    video_writer.write(obs_dict["images"]["right_wrist"])
 
-                # 执行模型推理
-                action_tensor = model.select_action(input_data) # 预期 shape [1, 14]
+                with torch.inference_mode():
+                    input_data = {}
+                    img_head = obs_dict["images"]["head"]
+                    img_head = rearrange(img_head, 'h w c -> c h w')
+                    input_data["observation.images.head"] = torch.from_numpy(img_head / 255.0).float().to(device).unsqueeze(0)
+                    img_left = obs_dict["images"]["left_wrist"]
+                    img_left = rearrange(img_left, 'h w c -> c h w')
+                    input_data["observation.images.left_wrist"] = torch.from_numpy(img_left / 255.0).float().to(device).unsqueeze(0)
+                    img_right = obs_dict["images"]["right_wrist"]
+                    img_right = rearrange(img_right, 'h w c -> c h w')
+                    input_data["observation.images.right_wrist"] = torch.from_numpy(img_right / 255.0).float().to(device).unsqueeze(0)
+                    input_data["observation.state"] = torch.from_numpy(obs_dict['qpos']).float().to(device).unsqueeze(0)
+                    input_data["observation.eef"] = torch.from_numpy(obs_dict['eef']).float().to(device).unsqueeze(0)
+                    input_data["task"] = task_prompt
+                    input_data["repo_id"] = repo_id
 
-            # 将动作写回共享内存 ---
-            action = action_tensor.squeeze(0).cpu().numpy() # 变为 (14,)
-            action[6] = action[6] + 3.36; action[13] = action[13] + 3.36  # gripper offset
-            robot_action(action, shm_dict)
+                    action_tensor = model.select_action(input_data)
 
-            timestep += 1
+                action = action_tensor.squeeze(0).cpu().numpy()
+                print("raw_action:", action, type(action))
+                action[6] = action[6] + 4.36; action[13] = action[13] + 4.36 # 值接近0时夹爪闭合，接近
+                print(action)
+                robot_action(action, shm_dict)
 
-        robot_action(action, shm_dict)
+                timestep += 1
+
+            if video_writer is not None:
+                video_writer.release()
+                print(f"--- 视频 {video_filename} 已保存 (回合结束) ---")
+                video_writer = None # 设为None，以便下一个回合创建新文件
+
+    finally:
+        # 无论程序是正常结束还是被 Ctrl+C 中断，都会执行
+        print("\n--- 'inference_process' 正在进入 finally 清理块 ---")
+        if video_writer is not None and video_writer.isOpened():
+            print(f"检测到中断！正在强制释放 video_writer...")
+            video_writer.release()
+            print(f"--- 视频 {video_filename} 已被强制保存 ---")
 
 
 def parse_args(known=False):
@@ -329,12 +332,12 @@ def parse_args(known=False):
     parser.add_argument('--max_publish_step', type=int, default=10000, help='max publish step')
 
     # 检查点设置
-    parser.add_argument('--ckpt_path', type=str, default='',
+    parser.add_argument('--ckpt_path', type=str, default='/home/haoming/ARX/pi0_sft/single_arm_picking_data_new',
                         help='ckpt path')
 
     # 配置文件
     parser.add_argument('--data', type=str,
-                        default=Path.joinpath(ROOT, 'data/config.yaml'),
+                        default='/home/haoming/ARX/ARX_collect/config.yaml',
                         help='config file')
 
     # 推理设置
@@ -355,14 +358,18 @@ def parse_args(known=False):
                         choices=['head', 'left_wrist', 'right_wrist', ],
                         default=['head', 'left_wrist', 'right_wrist'],
                         help='camera names to use')
-
+    
     # 机器人设置
+    parser.add_argument('--use_base', action='store_true', help='use robot base')
     parser.add_argument('--record', choices=['Distance', 'Speed'], default='Distance',
                         help='record data')
     parser.add_argument('--frame_rate', type=int, default=60, help='frame rate')
 
+    # 图像设置
+    parser.add_argument('--use_depth_image', action='store_true', help='use depth image')
+    
     # 状态和动作设置
-    parser.add_argument('--gripper_gate', type=float, default=-1, help='gripper gate threshold')
+    parser.add_argument('--gripper_gate', type=float, default=1.8, help='gripper gate threshold')
 
     return parser.parse_known_args()[0] if known else parser.parse_args()
 

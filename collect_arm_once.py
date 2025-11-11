@@ -220,6 +220,107 @@ def collect_information(args, collector):
     return timesteps, actions, actions_eef
 
 
+def collect_information_new(args, ros_operator, voice_engine):
+    timesteps = []
+    actions = []
+    actions_eef = []
+    action_bases = []
+    action_velocities = []
+    count = 0
+    rate = Rate(args.frame_rate)
+
+    STATE_RECORDING = 0
+    STATE_STOP_PENDING = 1  # 运动已停止，正在确认
+    current_state = STATE_RECORDING
+
+    # 速度阈值
+    VELOCITY_STOP_THRESHOLD = 0.5  # 运动停止的阈值
+    VELOCITY_RESTART_THRESHOLD = 1.0 # 恢复运动的阈值
+    
+    # 停止确认时间：必须保持静止 1.5 秒才算真正结束
+    STOP_CONFIRM_DURATION_SEC = 1.5
+    stop_pending_start_time = 0
+    
+    print("\n--- 录制已开始 (在 'go' 之后) ---")
+    print(f"录制将在机械臂 [静止 {STOP_CONFIRM_DURATION_SEC} 秒] 后 [自动停止]。")
+
+    gripper_idx = [6, 13]
+    gripper_close = -2.1
+
+    while (count < args.max_timesteps) and rclpy.ok():
+        obs_dict = ros_operator.get_observation(ts=count)
+        action_dict = ros_operator.get_action()
+
+        # 同步帧检测
+        if obs_dict is None or action_dict is None:
+            print("Synchronization frame", end='\r')
+            rate.sleep()
+            continue
+        
+        # 计算所有关节速度的绝对值之和，作为总运动量
+        current_qvel = obs_dict['qvel']
+        total_velocity = np.sum(np.abs(current_qvel))
+
+        if current_state == STATE_RECORDING:
+            if total_velocity < VELOCITY_STOP_THRESHOLD:
+                print(f"\n[INFO] 运动停止 (V={total_velocity:.2f})。等待 {STOP_CONFIRM_DURATION_SEC} 秒确认...")
+                current_state = STATE_STOP_PENDING
+                stop_pending_start_time = time.time() # 启动计时器
+            
+        elif current_state == STATE_STOP_PENDING:
+            if total_velocity > VELOCITY_RESTART_THRESHOLD:
+                print("[INFO] 只是一个暂停，恢复录制。")
+                current_state = STATE_RECORDING
+                
+            elif (time.time() - stop_pending_start_time) > STOP_CONFIRM_DURATION_SEC:
+                print(f"\n✓ 自动停止：已静止 {STOP_CONFIRM_DURATION_SEC} 秒。")
+                voice_process(voice_engine, "Stopped, Stopped!") # 语音反馈
+                break
+
+        # 获取动作和观察值
+        action = deepcopy(obs_dict['qpos'])
+        action_eef = deepcopy(obs_dict['eef'])
+        action_base = obs_dict['robot_base']
+        action_velocity = obs_dict['base_velocity']
+
+        # 夹爪动作处理
+        for idx in gripper_idx:
+            action[idx] = 0 if action[idx] > gripper_close else action[idx]
+        action_eef[6] = 0 if action_eef[6] > gripper_close else action_eef[6]
+        action_eef[13] = 0 if action_eef[13] > gripper_close else action_eef[13]
+
+        # 总是收集数据，之后再清理
+        timesteps.append(obs_dict)
+        actions.append(action)
+        actions_eef.append(action_eef)
+        action_bases.append(action_base)
+        action_velocities.append(action_velocity)
+
+        count += 1
+        print(f"Frame: {count} (V: {total_velocity:.2f}, State: {current_state})", end='\r') # 增加状态显示
+
+        if not rclpy.ok():
+            exit(-1)
+
+        rate.sleep()
+
+    print(f"\nlen(timesteps): {len(timesteps)}")
+    print(f"len(actions)  : {len(actions)}")
+    
+    # 清理“待确认”期间的污染数据
+    if current_state == STATE_STOP_PENDING and len(timesteps) > 0:
+        frames_to_remove = int(STOP_CONFIRM_DURATION_SEC * args.frame_rate)
+        print(f"清理：正在移除最后 {frames_to_remove} 帧静止数据...")
+        timesteps = timesteps[:-frames_to_remove]
+        actions = actions[:-frames_to_remove]
+        actions_eef = actions_eef[:-frames_to_remove]
+        action_bases = action_bases[:-frames_to_remove]
+        action_velocities = action_velocities[:-frames_to_remove]
+        print(f"✓ 清理完毕。最终帧数: {len(timesteps)}")
+
+    return timesteps, actions, actions_eef, action_bases, action_velocities
+
+
 def compress_and_pad_images(data_dict, camera_names, quality=50):
     encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
     all_encoded_lengths = []

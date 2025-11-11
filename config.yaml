@@ -1,0 +1,23 @@
+camera_config:
+  img_head_topic: '/camera/camera_h/color/image_rect_raw/compressed'
+  img_left_topic: '/camera/camera_l/color/image_rect_raw/compressed'
+  img_right_topic: '/camera/camera_r/color/image_rect_raw/compressed'
+
+  img_head_depth_topic: '/camera/camera_h/depth/image_rect_raw/compressed'
+  img_left_depth_topic: '/camera/camera_l/depth/image_rect_raw/compressed'
+  img_right_depth_topic: '/camera/camera_r/depth/image_rect_raw/compressed'
+
+arm_config:
+  controller_left_topic: '/ARX_VR_L'
+  controller_right_topic: '/ARX_VR_R'
+  arm_feedback_left_topic: '/arm_l_status_full'
+  arm_feedback_right_topic: '/arm_r_status_full'
+
+  follow_arm_left_cmd_topic: '/joint_control'
+  follow_arm_right_cmd_topic: '/joint_control2'
+  follow_arm_left_feedback_topic: '/joint_information'
+  follow_arm_right_feedback_topic: '/joint_information2'
+
+robot_base_config:
+  robot_base_topic: '/body_information'
+  robot_base_cmd_topic: '/body_control'
