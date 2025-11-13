@@ -151,10 +151,16 @@ class Rate:
         self.last_time = time.time()
 
 
-def collect_detect(start_episode, voice_engine):
-    print(f"\nPreparing to record episode {start_episode}")
-    input("Press Enter to start recording...")
+def detect(collector):
+    '''右夹爪闭合返回true'''
+    time.sleep(2)  # 等待夹爪动作稳定
+    obs = collector.get_observation()
+    right_gripper = obs['qpos'][13]
     
+    return right_gripper > -1.0 # 右夹爪闭合返回true
+
+
+def collect_detect(voice_engine):
     for i in range(3, 0, -1):
         voice_process(voice_engine, str(i))
         time.sleep(1)
@@ -162,70 +168,8 @@ def collect_detect(start_episode, voice_engine):
     voice_process(voice_engine, "Go!")
 
 
-def collect_information(args, collector):
-    timesteps, actions, actions_eef = [], [], []
-    count = 0
-    rate = Rate(args.frame_rate)
-    gripper_idx = [6, 13]
-    gripper_close_threshold = -1.0
-    
-    print("\nStarting data collection... Press 'e' to END this trajectory recording")
-    
-    WINDOW_NAME = "Dual Arm Collection"
-    cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
-
-    while rclpy.ok():
-        obs_dict = collector.get_observation()
-        if obs_dict is None:
-            print("Synchronization frame, waiting...", end='\r')
-            rate.sleep()
-            continue
-        
-        action = deepcopy(obs_dict['qpos'])
-        action_eef = deepcopy(obs_dict['eef'])
-
-        # 对于采集的数据来说，夹爪打开时为0，闭合时为-3出头
-        # for idx in gripper_idx:
-        #     action[idx] = 0 if action[idx] > gripper_close_threshold else action[idx]
-        #     action_eef[idx] = 0 if action_eef[idx] > gripper_close_threshold else action_eef[idx]
-        
-        # action_eef[6] = 0 if action_eef[6] > gripper_close_threshold else action_eef[6]
-        # action_eef[13] = 0 if action_eef[13] > gripper_close_threshold else action_eef[13]
-        
-        timesteps.append(obs_dict)
-        actions.append(action)
-        actions_eef.append(action_eef)
-
-        head_img = obs_dict['images']['head']
-        left_img = obs_dict['images']['left_wrist']
-        right_img = obs_dict['images']['right_wrist']
-        h, w, _ = head_img.shape
-        left_img_resized = cv2.resize(left_img, (w, h))
-        right_img_resized = cv2.resize(right_img, (w, h))
-        combined_img = np.hstack([left_img_resized, head_img, right_img_resized])
-        text = f"Frames: {count} (Press 'e' to end)"
-        cv2.putText(combined_img, text, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        cv2.imshow(WINDOW_NAME, combined_img)
-        
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord('e'):
-            print(f"\n✓ Trajectory recording finished.")
-            break
-        count += 1
-        if not rclpy.ok(): exit(-1)
-        
-        rate.sleep()
-    
-    print(f"\n✓ Collection stopped. Total frames: {len(timesteps)}")
-    return timesteps, actions, actions_eef
-
-
 def collect_information_new(args, ros_operator, voice_engine):
     timesteps = []
-    actions = []
-    actions_eef = []
-    action_bases = []
-    action_velocities = []
     count = 0
     rate = Rate(args.frame_rate)
 
@@ -235,24 +179,23 @@ def collect_information_new(args, ros_operator, voice_engine):
 
     # 速度阈值
     VELOCITY_STOP_THRESHOLD = 0.5  # 运动停止的阈值
-    VELOCITY_RESTART_THRESHOLD = 1.0 # 恢复运动的阈值
+    VELOCITY_RESTART_THRESHOLD = args.v_threshold # 恢复运动的阈值
     
     # 停止确认时间：必须保持静止 1.5 秒才算真正结束
     STOP_CONFIRM_DURATION_SEC = 1.5
     stop_pending_start_time = 0
     
-    print("\n--- 录制已开始 (在 'go' 之后) ---")
     print(f"录制将在机械臂 [静止 {STOP_CONFIRM_DURATION_SEC} 秒] 后 [自动停止]。")
-
+    WINDOW_NAME = "Dual Arm Collection"
+    cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
     gripper_idx = [6, 13]
     gripper_close = -2.1
 
-    while (count < args.max_timesteps) and rclpy.ok():
-        obs_dict = ros_operator.get_observation(ts=count)
-        action_dict = ros_operator.get_action()
+    while rclpy.ok():
+        obs_dict = ros_operator.get_observation()
 
         # 同步帧检测
-        if obs_dict is None or action_dict is None:
+        if obs_dict is None:
             print("Synchronization frame", end='\r')
             rate.sleep()
             continue
@@ -260,7 +203,6 @@ def collect_information_new(args, ros_operator, voice_engine):
         # 计算所有关节速度的绝对值之和，作为总运动量
         current_qvel = obs_dict['qvel']
         total_velocity = np.sum(np.abs(current_qvel))
-
         if current_state == STATE_RECORDING:
             if total_velocity < VELOCITY_STOP_THRESHOLD:
                 print(f"\n[INFO] 运动停止 (V={total_velocity:.2f})。等待 {STOP_CONFIRM_DURATION_SEC} 秒确认...")
@@ -277,48 +219,46 @@ def collect_information_new(args, ros_operator, voice_engine):
                 voice_process(voice_engine, "Stopped, Stopped!") # 语音反馈
                 break
 
-        # 获取动作和观察值
-        action = deepcopy(obs_dict['qpos'])
-        action_eef = deepcopy(obs_dict['eef'])
-        action_base = obs_dict['robot_base']
-        action_velocity = obs_dict['base_velocity']
 
         # 夹爪动作处理
-        for idx in gripper_idx:
-            action[idx] = 0 if action[idx] > gripper_close else action[idx]
-        action_eef[6] = 0 if action_eef[6] > gripper_close else action_eef[6]
-        action_eef[13] = 0 if action_eef[13] > gripper_close else action_eef[13]
+        # for idx in gripper_idx:
+        #     action[idx] = 0 if action[idx] > gripper_close else action[idx]
+        # action_eef[6] = 0 if action_eef[6] > gripper_close else action_eef[6]
+        # action_eef[13] = 0 if action_eef[13] > gripper_close else action_eef[13]
 
         # 总是收集数据，之后再清理
         timesteps.append(obs_dict)
-        actions.append(action)
-        actions_eef.append(action_eef)
-        action_bases.append(action_base)
-        action_velocities.append(action_velocity)
+
+        # 显示采集时的图片
+        head_img = obs_dict['images']['head']
+        left_img = obs_dict['images']['left_wrist']
+        right_img = obs_dict['images']['right_wrist']
+        h, w, _ = head_img.shape
+        left_img_resized = cv2.resize(left_img, (w, h))
+        right_img_resized = cv2.resize(right_img, (w, h))
+        combined_img = np.hstack([left_img_resized, head_img, right_img_resized])
+        text = f"Frames: {count} (Press 'e' to end)"
+        cv2.putText(combined_img, text, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.imshow(WINDOW_NAME, combined_img)
+        cv2.waitKey(1)
 
         count += 1
-        print(f"Frame: {count} (V: {total_velocity:.2f}, State: {current_state})", end='\r') # 增加状态显示
-
         if not rclpy.ok():
             exit(-1)
 
         rate.sleep()
 
     print(f"\nlen(timesteps): {len(timesteps)}")
-    print(f"len(actions)  : {len(actions)}")
     
     # 清理“待确认”期间的污染数据
     if current_state == STATE_STOP_PENDING and len(timesteps) > 0:
         frames_to_remove = int(STOP_CONFIRM_DURATION_SEC * args.frame_rate)
         print(f"清理：正在移除最后 {frames_to_remove} 帧静止数据...")
         timesteps = timesteps[:-frames_to_remove]
-        actions = actions[:-frames_to_remove]
-        actions_eef = actions_eef[:-frames_to_remove]
-        action_bases = action_bases[:-frames_to_remove]
-        action_velocities = action_velocities[:-frames_to_remove]
+
         print(f"✓ 清理完毕。最终帧数: {len(timesteps)}")
 
-    return timesteps, actions, actions_eef, action_bases, action_velocities
+    return timesteps
 
 
 def compress_and_pad_images(data_dict, camera_names, quality=50):
@@ -376,45 +316,40 @@ def create_and_write_hdf5(args, data_dict, dataset_path, data_size, padded_size)
             root[name][...] = arr
 
 
-def save_data(args, timesteps, actions, actions_eef, dataset_path):
-    data_size = len(actions)
-    if data_size == 0:
-        print("\nNo data to save.")
-        return
-
+def save_data(args, timesteps, dataset_path):
+    data_size = len(timesteps)
     print(f"\n{'='*60}\nSaving {data_size} frames to HDF5...\n{'='*60}")
     
     data_dict = {
         '/observations/qpos': [], '/observations/qvel': [], '/observations/effort': [],
-        '/observations/eef': [], '/action': [], '/action_eef': []
+        '/observations/eef': [], '/observations/robot_base': [], '/observations/base_velocity': [],
+        '/action': [], '/action_eef': []
     }
     for cam_name in args.camera_names:
         data_dict[f'/observations/images/{cam_name}'] = []
     
-    for ts, action, action_eef in zip(timesteps, actions, actions_eef):
+    for ts in timesteps:
         data_dict['/observations/qpos'].append(ts['qpos'])
         data_dict['/observations/qvel'].append(ts['qvel'])
         data_dict['/observations/effort'].append(ts['effort'])
         data_dict['/observations/eef'].append(ts['eef'])
-        data_dict['/action'].append(action)
-        data_dict['/action_eef'].append(action_eef)
         for cam_name in args.camera_names:
             data_dict[f'/observations/images/{cam_name}'].append(ts['images'][cam_name])
     
-    data_dict['/action_base'] = np.zeros((data_size, 6), dtype=np.float32)
+    # 动作数据与观测数据相同
+    data_dict['/action'] = deepcopy(data_dict['/observations/qpos'])
+    data_dict['/action_eef'] = deepcopy(data_dict['/observations/eef'])
+
+    # 底盘数据先记为 0
+    data_dict['/action_base'] = np.zeros((data_size, 6), dtype=np.float32) 
     data_dict['/action_velocity'] = np.zeros((data_size, 4), dtype=np.float32)
-    data_dict['/observations/robot_base'] = deepcopy(data_dict['/action_base'])
-    data_dict['/observations/base_velocity'] = deepcopy(data_dict['/action_velocity'])
+    data_dict['/observations/robot_base'] = np.zeros((data_size, 6), dtype=np.float32) 
+    data_dict['/observations/base_velocity'] = np.zeros((data_size, 4), dtype=np.float32)
     
-    t0 = time.time()
     padded_size = compress_and_pad_images(data_dict, args.camera_names)
-    print(f"✓ Image compression complete in {time.time() - t0:.2f}s")
-    
-    t0 = time.time()
     create_and_write_hdf5(args, data_dict, dataset_path, data_size, padded_size)
     
     voice_process(voice_engine, "Saved")
-    print(f"\n{'='*60}\n✓ Data saved successfully in {time.time() - t0:.1f}s")
     print(f"  Location: {dataset_path}.hdf5\n{'='*60}\n")
 
 
@@ -427,10 +362,10 @@ def main(args):
     spin_thread = threading.Thread(target=rclpy.spin, args=(collector,), daemon=True)
     spin_thread.start()
     print("Waiting for topics to be ready...")
-    time.sleep(2)
+    time.sleep(1)
     
     date_str = datetime.now().strftime("%Y%m%d")
-    dataset_dir = Path(args.dataset_dir) / f"{args.task.replace(' ', '_')}_collector{args.user_id}_{date_str}"
+    dataset_dir = Path(args.dataset_dir) / f"{args.task.replace(' ', '_')}"
     dataset_dir.mkdir(parents=True, exist_ok=True)
     print(f"Dataset directory: {dataset_dir}\n")
     
@@ -445,34 +380,30 @@ def main(args):
                     continue
     
     current_episode = max_episode + 1
-    print(f"Starting episode {current_episode}\n")
+    print(f"\nPreparing to record episode {current_episode}")
+    print("Close the right gripper to continue:\n")
+    voice_process(voice_engine, "Continue or not?")
+    while not detect(collector):
+        print("检测未通过，等待右夹爪闭合...", end='\r') # end='\r' 让打印在同一行刷新
+        time.sleep(0.2)
+    collect_detect(voice_engine)
     
-    collect_detect(current_episode, voice_engine)
+    timesteps = collect_information_new(args, collector, voice_engine)
+
+    print("  Right gripper CLOSE = Save")
+    print("  Right gripper OPEN  = Delete")
+    voice_process(voice_engine, "Delete or save?")
+    flag_save_or_not = detect(collector)
+        
+    if flag_save_or_not:
+        dataset_path = dataset_dir / f"episode_{current_episode}"
+        save_data(args, timesteps, str(dataset_path))
     
-    timesteps, actions, actions_eef = collect_information(args, collector)
-    
-    if timesteps:
-        print("\n--- Action Required ---")
-        print("  [s] Save trajectory")
-        print("  [d] Discard trajectory and exit")
-        print(">>> Click the image window and press a key <<<")
-        while True:
-            key = cv2.waitKey(0) & 0xFF
-            if key == ord('s'):
-                print(f"\033[33m[INFO] Saving episode {current_episode}...\033[0m")
-                dataset_path = dataset_dir / f"episode_{current_episode}"
-                try:
-                    save_data(args, timesteps, actions, actions_eef, str(dataset_path))
-                    print(f"\033[32m[INFO] Episode {current_episode} saved successfully.\033[0m")
-                except Exception as e:
-                    print(f"\033[31m[ERROR] Failed to save episode: {e}\033[0m")
-                break
-            
-            elif key == ord('d'):
-                print("\033[31m[INFO] Episode discarded. Not saved.\033[0m")
-                break
     else:
-        print("\nNo data collected for this episode.")
+        voice_process(voice_engine, "Deleted!")
+        print("\033[31m[INFO] Episode discarded.\033[0m")
+    
+    time.sleep(0.1)
     
     print("\nShutting down...")
     cv2.destroyAllWindows()
@@ -493,6 +424,7 @@ def parse_arguments():
     parser.add_argument('--camera_names', nargs='+', type=str, choices=['head', 'left_wrist', 'right_wrist'], default=['head', 'left_wrist', 'right_wrist'], help='Camera names to use')
     parser.add_argument('--key_collect', action='store_true', help='Use keyboard trigger instead of automatic detection')
     parser.add_argument('--task', type=str, default='dual_arm_manipulation', help='Task name')
+    parser.add_argument('--v_threshold', type=float, default=1.0, help='velocity threshold for collect')
     
     return parser.parse_args()
 
