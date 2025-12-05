@@ -25,7 +25,7 @@ gnome-terminal --title="head_pose" -- bash -c "
     sleep 2
 
     echo '正在发布Topic...'
-    ros2 topic pub -1 /ARX_VR_L arm_control/msg/PosCmd '{height: 16.5}'
+    ros2 topic pub -1 /ARX_VR_L arm_control/msg/PosCmd '{height: 14.0}'
     exec bash
 "
 sleep 3
@@ -37,5 +37,5 @@ sleep 3
 # 机械臂复位
 gnome-terminal --title="lift" -x bash -c "cd /home/haoming/ARX/LIFT/ARX_X5/ROS2/X5_ws; source install/setup.bash; ros2 launch arx_x5_controller open_double_arm.launch.py; exec bash;"
 
-# Inference
-# gnome-terminal --title="inference" -x bash -c "cd /home/haoming/ARX/ARX_collect; source ~/miniconda3/etc/profile.d/conda.sh; conda activate lerobot; python arx_lerobot.py"   
+# Replay
+gnome-terminal --title="inference" -x bash -c "cd /home/haoming/ARX/ARX_collect; source ~/miniconda3/etc/profile.d/conda.sh; conda activate lerobot; python replay.py"   

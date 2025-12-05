@@ -161,7 +161,7 @@ def detect(collector):
 
 
 def collect_detect(voice_engine):
-    for i in range(3, 0, -1):
+    for i in range(2, 0, -1):
         voice_process(voice_engine, str(i))
         time.sleep(1)
     

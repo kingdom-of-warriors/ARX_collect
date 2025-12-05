@@ -7,3 +7,7 @@ act/
 
 # cache 
 __pycache__/
+
+# video, png
+videos/
+images/

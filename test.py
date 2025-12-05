@@ -1,25 +1,31 @@
-import h5py
-import os
+# import h5py
+# import os
 
-dataset_dir = "/mnt/inspurfs/evla1_t/lijiarui/datasets/dual_arm_pickings_collector0_20251101"
-corrupted = []
-valid = []
+# dataset_dir = "/mnt/inspurfs/evla1_t/lijiarui/datasets/dual_arm_pickings_collector0_20251101"
+# corrupted = []
+# valid = []
 
-for f in sorted(os.listdir(dataset_dir)):
-    if f.endswith('.hdf5'):
-        path = os.path.join(dataset_dir, f)
-        try:
-            with h5py.File(path, 'r') as hf:
-                _ = list(hf.keys())
-            valid.append(f)
-            print(f"✓ {f}")
-        except Exception as e:
-            corrupted.append(f)
-            print(f"✗ {f} - {e}")
+# for f in sorted(os.listdir(dataset_dir)):
+#     if f.endswith('.hdf5'):
+#         path = os.path.join(dataset_dir, f)
+#         try:
+#             with h5py.File(path, 'r') as hf:
+#                 _ = list(hf.keys())
+#             valid.append(f)
+#             print(f"✓ {f}")
+#         except Exception as e:
+#             corrupted.append(f)
+#             print(f"✗ {f} - {e}")
 
-print(f"\n有效文件: {len(valid)}")
-print(f"损坏文件: {len(corrupted)}")
-if corrupted:
-    print("\n需要删除:")
-    for f in corrupted:
-        print(f"  rm {os.path.join(dataset_dir, f)}")
+# print(f"\n有效文件: {len(valid)}")
+# print(f"损坏文件: {len(corrupted)}")
+# if corrupted:
+#     print("\n需要删除:")
+#     for f in corrupted:
+#         print(f"  rm {os.path.join(dataset_dir, f)}")
+
+from lerobot.policies.pi0.modeling_pi0 import PI0Policy
+
+a = PI0Policy.from_pretrained("/home/haoming/ARX/pi0_sft/single_arm_picking_pi0_sft_stay_cut").to("cuda")
+import ipdb; ipdb.set_trace()
+b = 1

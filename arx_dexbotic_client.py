@@ -15,32 +15,24 @@ if str(ROOT) not in sys.path:
     
 import cv2
 from datetime import datetime
-import time
 import argparse
 import collections
 import yaml
-from einops import rearrange
 import rclpy
 import torch
 import threading
-
-from rclpy.executors import MultiThreadedExecutor
-
-from utils.ros_operator import RosOperator, Rate
-from utils.setup_loader import setup_loader
-
-import sys
-import json
-
-obs_dict = collections.OrderedDict()
-
 import multiprocessing as mp
 from multiprocessing.shared_memory import SharedMemory
 import numpy as np
+import requests
+import json
 
-# PI0 加载模型
-from lerobot.policies.pi0.modeling_pi0 import PI0Policy
-import matplotlib.pyplot as plt
+from rclpy.executors import MultiThreadedExecutor
+from utils.ros_operator import RosOperator, Rate
+from utils.setup_loader import setup_loader
+
+
+obs_dict = collections.OrderedDict()
 
 np.set_printoptions(linewidth=200)
 np.set_printoptions(suppress=True)
@@ -58,7 +50,6 @@ def make_shm_name_dict(args, shapes):
     for state_key in shapes["states"]:
         shm_name_dict[state_key] = f"shm_state_{state_key}"
     shm_name_dict["action"] = "shm_action"
-
     return shm_name_dict
 
 
@@ -77,7 +68,6 @@ def create_shm_dict(shm_name_dict, shapes, dtypes):
     size = np.prod(action_shape) * np.dtype(np.float32).itemsize
     shm = SharedMemory(name=shm_name_dict["action"], create=True, size=size)
     shm_dict["action"] = (shm, action_shape, np.float32)
-
     return shm_dict
 
 
@@ -93,7 +83,6 @@ def connect_shm_dict(shm_name_dict, shapes, dtypes):
     action_shape = (14,)
     shm = SharedMemory(name=shm_name_dict["action"], create=False)
     shm_dict["action"] = (shm, action_shape, np.float32)
-
     return shm_dict
 
 
@@ -102,32 +91,19 @@ def robot_action(action, shm_dict):
     np_array = np.ndarray(shape, dtype=dtype, buffer=shm.buf)
     np_array[:] = action
 
-
-def auto_model_from_pretrained(path, **kwargs):
-    device = "cuda:0" if torch.cuda.is_available() else "cpu"
-    model = PI0Policy.from_pretrained(path, **kwargs).to(device)
-    cfg_path = os.path.join(path, "train_config.json")
-    with open(cfg_path, 'r') as f:
-        cfg = json.load(f)
-
-    return model, cfg
-
-
 def apply_gripper_gate(action_value, gate):
     min_gripper = 0
-    max_gripper = 8
-
+    max_gripper = 5
     return min_gripper if action_value < gate else max_gripper
 
+
 def init_robot(ros_operator, connected_event, start_event):
-    closed = 4
-    opened = 0
-    left_qpos  = [0, 0, 0, 0, 0, 0, closed]
-    right_qpos = [0, 0, 0, 0, 0, 0, closed]
-    ros_operator.follow_arm_publish_continuous(left_qpos, right_qpos)
+    init0 = [0, 0, 0, 0, 0, 0, 4] # 夹爪关闭
+    init1 = [0, 0, 0, 0, 0, 0, 0] # 夹爪张开
+    ros_operator.follow_arm_publish_continuous(init0, init0)
     connected_event.set()
     start_event.wait()
-    ros_operator.follow_arm_publish_continuous(left_qpos, right_qpos)
+    ros_operator.follow_arm_publish_continuous(init0, init0)
 
 
 def cleanup_shm(names):
@@ -145,59 +121,45 @@ def ros_process(args, meta_queue, connected_event, start_event, shm_ready_event)
         executor.spin()
 
     setup_loader(ROOT)
-
     rclpy.init()
-
     data = load_yaml(args.data)
     ros_operator = RosOperator(args, data, in_collect=False)
-
     executor = MultiThreadedExecutor()
     executor.add_node(ros_operator)
-
     spin_thread = threading.Thread(target=_ros_spin, args=(executor,), daemon=True)
     spin_thread.start()
-
     init_robot(ros_operator, connected_event, start_event)
-
     rate = Rate(args.frame_rate)
     while rclpy.ok():
         obs = ros_operator.get_observation()
         if obs:
             shapes = {"images": {}, "states": {}, "dtypes": {}}
-
             for cam in args.camera_names:
                 img = obs["images"][cam]
                 shapes["images"][cam] = img.shape
                 shapes["dtypes"][cam] = img.dtype
-            shapes["states"]["eef"] = obs["eef"].shape # add eef
+            shapes["states"]["eef"] = obs["eef"].shape 
             shapes["states"]["qpos"] = obs["qpos"].shape
             shapes["states"]["qvel"] = obs["qvel"].shape
             shapes["states"]["effort"] = obs["effort"].shape
             shapes["states"]["robot_base"] = obs["robot_base"].shape
             shapes["states"]["base_velocity"] = obs["base_velocity"].shape
             
-
             meta_queue.put(shapes)
-
             break
-
         rate.sleep()
 
-    # 创建共享内存
     shm_name_dict = meta_queue.get()
-
     cleanup_shm(shm_name_dict.values())
     shm_dict = create_shm_dict(shm_name_dict, shapes, shapes["dtypes"])
     shm_ready_event.set()
-
     rate = Rate(args.frame_rate)
     while rclpy.ok():
         obs = ros_operator.get_observation()
         if not obs:
             rate.sleep()
             continue
-
-        # 写入共享内存
+        
         for cam in args.camera_names:
             shm, shape, dtype = shm_dict[cam]
             np_array = np.ndarray(shape, dtype=dtype, buffer=shm.buf)
@@ -206,25 +168,19 @@ def ros_process(args, meta_queue, connected_event, start_event, shm_ready_event)
             shm, shape, dtype = shm_dict[state_key]
             np_array = np.ndarray(shape, dtype=dtype, buffer=shm.buf)
             np_array[:] = obs[state_key]
-
-        # 读取动作并执行
+        
         shm, shape, dtype = shm_dict["action"]
         action = np.ndarray(shape, dtype=dtype, buffer=shm.buf).copy()
-        if np.any(action):  # 确保动作不全是 0
+        if np.any(action): 
             gripper_gate = args.gripper_gate
-
             gripper_idx = [6, 13]
-
             left_action = action[:gripper_idx[0] + 1]
             if gripper_gate != -1:
                 left_action[gripper_idx[0]] = apply_gripper_gate(left_action[gripper_idx[0]], gripper_gate)
-
             right_action = action[gripper_idx[0] + 1:gripper_idx[1] + 1]
             if gripper_gate != -1:
                 right_action[gripper_idx[0]] = apply_gripper_gate(right_action[gripper_idx[0]], gripper_gate)
-
             ros_operator.follow_arm_publish(left_action, right_action)
-
         rate.sleep()
 
     executor.shutdown()
@@ -235,32 +191,35 @@ def ros_process(args, meta_queue, connected_event, start_event, shm_ready_event)
 
 
 def inference_process(args, shm_dict, shapes, ros_proc):
-    device = "cuda:0"
-    model, cfg = auto_model_from_pretrained(args.ckpt_path)
-    model.eval()
-    print("模型加载成功。")
+    rate = Rate(args.frame_rate)
+    server_url = "http://10.140.60.180:7891/process_frame" 
+    task_prompt = "Use the right arm to pick up the blue block and place it in the transparent box"
+    
+    print(f"--- 客户端推理已启动 ---")
+    print(f"目标服务器: {server_url}")
 
-    task_prompt = ["Use the right arm to pick up the blue block and place it in the transparent box"]
-    repo_id = cfg["dataset"]["repo_id"]
-    print("repo_id", repo_id)
-
-    h, w, _ = shapes["images"]["right_wrist"]
-    fps = args.frame_rate
-    print(f"视频录制参数已设置: (W: {w}, H: {h}, FPS: {fps})")
+    # 视频录制设置 (与你之前的代码相同)
+    try:
+        h, w, _ = shapes["images"]["right_wrist"]
+        fps = args.frame_rate
+        print(f"视频录制参数已设置: (W: {w}, H: {h}, FPS: {fps})")
+    except Exception as e:
+        print(f"!!! 警告: 无法从 'shapes' 获取视频参数: {e} !!!")
+        w, h, fps = (None, None, None)
 
     video_writer = None
     video_filename = ""
-    qpos_record = []
-    gripper_idx = [6, 13]
+    session = requests.Session() # 使用 Session 保持连接
 
     try:
         while ros_proc.is_alive():
             timestep = 0
             
-            if w is not None and video_writer is None: # 仅在未初始化时创建
+            # (每个回合开始时)
+            if w is not None and video_writer is None: 
                 try:
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    video_filename = f"videos/inference_right_wrist_{timestamp}.mp4"
+                    video_filename = f"inference_right_wrist_{timestamp}.mp4"
                     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
                     video_writer = cv2.VideoWriter(video_filename, fourcc, float(fps), (w, h))
                     print(f"--- 正在录制 'right_wrist' 视频到 {video_filename} ---")
@@ -271,10 +230,7 @@ def inference_process(args, shm_dict, shapes, ros_proc):
             while timestep < args.max_publish_step and ros_proc.is_alive():
                 obs_dict = {"images": {}, "eef": None, "qpos": None, "qvel": None,
                             "effort": None, "robot_base": None, "base_velocity": None}
-                
-                # if (len(model._action_queue) == 0): # 保证机械臂执行到位再取obs
-                #     time.sleep(0.03)
-                    
+
                 for cam in args.camera_names:
                     shm, shape, dtype = shm_dict[cam]
                     obs_dict["images"][cam] = np.ndarray(shape, dtype=dtype, buffer=shm.buf).copy()
@@ -282,46 +238,34 @@ def inference_process(args, shm_dict, shapes, ros_proc):
                     shm, shape, dtype = shm_dict[state_key]
                     obs_dict[state_key] = np.ndarray(shape, dtype=dtype, buffer=shm.buf).copy()
 
-                # 写入视频帧
                 if video_writer is not None:
-                    video_writer.write(obs_dict["images"]["head"])
+                    video_writer.write(obs_dict["images"]["right_wrist"])
 
-                obs_dict['qpos'][6] -= 3.75
-                obs_dict['qpos'][13] -= 3.75
+                # 准备数据
+                qpos_list = obs_dict['qpos'].tolist()
+                states_json = json.dumps(qpos_list)
+                payload = {
+                    "text": task_prompt,
+                    "states": states_json
+                }
 
-                with torch.inference_mode():
-                    input_data = {}
-                    img_head = obs_dict["images"]["head"]
-                    img_head = rearrange(img_head, 'h w c -> c h w')
-                    input_data["observation.images.head"] = torch.from_numpy(img_head / 255.0).float().to(device).unsqueeze(0)
-                    img_left = obs_dict["images"]["left_wrist"]
-                    img_left = rearrange(img_left, 'h w c -> c h w')
-                    input_data["observation.images.left_wrist"] = torch.from_numpy(img_left / 255.0).float().to(device).unsqueeze(0)
-                    img_right = obs_dict["images"]["right_wrist"]
-                    img_right = rearrange(img_right, 'h w c -> c h w')
-                    input_data["observation.images.right_wrist"] = torch.from_numpy(img_right / 255.0).float().to(device).unsqueeze(0)
-                    input_data["observation.state"] = torch.from_numpy(obs_dict['qpos']).float().to(device).unsqueeze(0)
-                    input_data["task"] = task_prompt
-                    input_data["repo_id"] = repo_id
+                _, img_head_buffer = cv2.imencode('.jpg', obs_dict["images"]["head"])
+                _, img_left_buffer = cv2.imencode('.jpg', obs_dict["images"]["left_wrist"])
+                _, img_right_buffer = cv2.imencode('.jpg', obs_dict["images"]["right_wrist"])
 
-                    action_tensor = model.select_action(input_data)
-                    qpos_record.append(obs_dict['qpos']) # 记录qpos
+                files_list = [
+                    ('image', ('head.jpg', img_head_buffer.tobytes(), 'image/jpeg')),
+                    ('image', ('left.jpg', img_left_buffer.tobytes(), 'image/jpeg')),
+                    ('image', ('right.jpg', img_right_buffer.tobytes(), 'image/jpeg')),
+                ]
 
-                action = action_tensor.squeeze(0).cpu().numpy()
+                response = session.post(server_url, data=payload, files=files_list, timeout=5)
+                response.raise_for_status()
+                action = np.array(response.json()['response'][0]) # 返回[50, 14]，取第一个动作
+                
 
-                # 是否使用相对动作
-                if args.is_delta:
-                    action_delta = action
-                    mask = np.array([0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1])
-                    action = (action + obs_dict['qpos']) * (1 - mask) + mask * action_delta
-
-                # 夹爪是否二值化
-                if args.gripper_binary:
-                    action[6] = np.where(action[6] < 0.5, 8.0, 0.0) # < 0.5则闭合，否则张开
-                    action[13] = np.where(action[13] < 0.5, 8.0, 0.0) # < 0.5则闭合，否则张开
-                else:
-                    action[6] += 3.75
-                    action[13] += 3.75
+                action[6] = action[6] + 3.4; action[13] = action[13] + 3.4
+                print("final_action:", action)
                 robot_action(action, shm_dict)
 
                 timestep += 1
@@ -329,71 +273,24 @@ def inference_process(args, shm_dict, shapes, ros_proc):
             if video_writer is not None:
                 video_writer.release()
                 print(f"--- 视频 {video_filename} 已保存 (回合结束) ---")
-                video_writer = None
+                video_writer = None 
 
     finally:
-        l = min(len(model.start_queue), len(model.end_queue))
-        start_queue = np.array(model.start_queue[:l])
-        end_queue = np.array(model.end_queue[:l])
-        infer_mean_time = (end_queue - start_queue).mean()
-        action_time_queue = start_queue[1:] - end_queue[:-1]
-        print("action_time", action_time_queue)
-        print("action_time_mean", action_time_queue.mean())
-        print("inference_time", infer_mean_time)
         print("\n--- 'inference_process' 正在进入 finally 清理块 ---")
         if video_writer is not None and video_writer.isOpened():
             print(f"检测到中断！正在强制释放 video_writer...")
             video_writer.release()
             print(f"--- 视频 {video_filename} 已被强制保存 ---")
-        # 绘制 qpos 曲线
-        if len(qpos_record) > 0:
-            try:
-                print("正在生成 qpos 轨迹图...")
-                data = np.array(qpos_record) # 转换为 numpy 数组 [T, 14]
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                
-                # 创建 7行2列 的子图布局
-                fig, axes = plt.subplots(7, 2, figsize=(15, 25))
-                axes = axes.flatten()
-                x_ticks = np.arange(0, data.shape[0] + 1, 50)
-
-                for i in range(min(14, data.shape[1])):
-                    axes[i].plot(data[:, i])
-                    axes[i].set_title(f"Joint {i}")
-                    axes[i].set_xlabel("Timestep")
-                    axes[i].set_ylabel("Position")
-                    axes[i].set_xticks(x_ticks) # 设置横坐标刻度
-                    axes[i].grid(True)
-                
-                plt.tight_layout()
-                plot_filename = f"images/qpos_plot_{timestamp}.png"
-                plt.savefig(plot_filename)
-                print(f"--- qpos 14维数据曲线已保存至: {plot_filename} ---")
-                plt.close()
-            except Exception as e:
-                print(f"!!! 警告: qpos 绘图失败: {e} !!!")
 
 
 def parse_args(known=False):
     parser = argparse.ArgumentParser()
-
     parser.add_argument('--max_publish_step', type=int, default=10000, help='max publish step')
-
-    # 检查点设置
-    parser.add_argument('--ckpt_path', type=str, default='/home/haoming/ARX/pi0_sft/single_arm_picking_pi0_sft_new_room_v1',
+    parser.add_argument('--ckpt_path', type=str, default='/home/haoming/ARX/pi0_sft/single_arm_picking_data_new',
                         help='ckpt path')
-    # 是否使用相对位置
-    parser.add_argument('--is_delta', type=bool, default=False)
-
-    # 模型夹爪是否二值化
-    parser.add_argument('-b', '--gripper_binary', action='store_true', help='gripper binary action')
-
-    # 配置文件
     parser.add_argument('--data', type=str,
                         default='/home/haoming/ARX/ARX_collect/config.yaml',
                         help='config file')
-
-    # 推理设置
     parser.add_argument('--seed', type=int, default=0, help='seed')
     parser.add_argument('--lr', type=float, default=1e-5, help='learning rate')
     parser.add_argument('--lr_backbone', type=float, default=1e-5, help='learning rate for backbone')
@@ -401,56 +298,40 @@ def parse_args(known=False):
     parser.add_argument('--loss_function', type=str, choices=['l1', 'l2', 'l1+l2'],
                         default='l1', help='loss function')
     parser.add_argument('--pos_lookahead_step', type=int, default=0, help='position lookahead step')
-
-    # 模型结构设置
     parser.add_argument('--backbone', type=str, default='resnet18', help='backbone model architecture')
     parser.add_argument('--chunk_size', type=int, default=30, help='chunk size for input data')
-
-    # 摄像头设置
     parser.add_argument('--camera_names', nargs='+', type=str,
                         choices=['head', 'left_wrist', 'right_wrist', ],
                         default=['head', 'left_wrist', 'right_wrist'],
                         help='camera names to use')
-    
-    # 机器人设置
     parser.add_argument('--use_base', action='store_true', help='use robot base')
     parser.add_argument('--record', choices=['Distance', 'Speed'], default='Distance',
                         help='record data')
-    parser.add_argument('--frame_rate', type=int, default=30, help='frame rate') # 会不会太高了？
-
-    # 图像设置
+    parser.add_argument('--frame_rate', type=int, default=60, help='frame rate')
     parser.add_argument('--use_depth_image', action='store_true', help='use depth image')
-    
-    # 状态和动作设置
-    parser.add_argument('--gripper_gate', type=float, default=1.5, help='gripper gate threshold')
-
+    parser.add_argument('--gripper_gate', type=float, default=1.8, help='gripper gate threshold')
     return parser.parse_known_args()[0] if known else parser.parse_args()
 
 
 def main(args):
     meta_queue = mp.Queue()
-
     connected_event = mp.Event()
     start_event = mp.Event()
     shm_ready_event = mp.Event()
 
-    # 启动ROS进程
     ros_proc = mp.Process(target=ros_process, args=(args, meta_queue, connected_event, 
-                                                    start_event, shm_ready_event))
+                                                   start_event, shm_ready_event))
     ros_proc.start()
-
     connected_event.wait()
     input("Enter any key to continue :")
     start_event.set()
 
-    # 等待meta信息
     shapes = meta_queue.get()
     shm_name_dict = make_shm_name_dict(args, shapes)
     meta_queue.put(shm_name_dict)
     shm_ready_event.wait()
     shm_dict = connect_shm_dict(shm_name_dict, shapes, shapes["dtypes"])
 
-    # 推理
     try:
         inference_process(args, shm_dict, shapes, ros_proc)
     except KeyboardInterrupt:
